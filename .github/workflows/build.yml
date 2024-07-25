@@ -29,16 +29,13 @@ jobs:
           repository: strawberrymusicplayer/strawberry
           fetch-depth: 0
           submodules: recursive
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: recursive
           
       - name: Patching
         shell: bash
         run: |
+          ls
+          curl -L -o replaceupdatelink.diff "https://raw.githubusercontent.com/stm7128/strawberry-build-windows/master/replaceupdatelink.diff"
+          cat replaceupdatelink.diff
           git apply replaceupdatelink.diff
           
 
