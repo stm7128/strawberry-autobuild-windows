@@ -1,0 +1,115 @@
+name: Daily Build and Release
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  build-windows-msvc:
+    name: Build Windows MSVC
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [ 'x86_64' ]
+        buildtype: [ 'release' ]
+    steps:
+      - name: Set prefix path
+        shell: bash
+        run: |
+          echo "prefix_path_backslash=C:/msvc-strawberry-${{matrix.arch}}-vs-17" >> $GITHUB_ENV
+          echo "prefix_path_forward=/msvc-strawberry-${{matrix.arch}}-vs-17" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: strawberrymusicplayer/strawberry
+          fetch-depth: 0
+          submodules: recursive
+          
+      - name: Patching
+        shell: bash
+        run: |
+          wget "https://raw.githubusercontent.com/stm7128/strawberrymusicplayer-auto-build/master/replaceupdatelink.diff"
+          git apply replaceupdatelink.diff
+          
+
+      - name: Create Build Environment
+        run: cmake -E make_directory build
+
+      - name: Run CMake
+        run: >
+            cmake
+            -S .
+            -B build
+            -DCMAKE_TOOLCHAIN_FILE="../cmake/Toolchain-${{matrix.arch}}-msvc.cmake"
+            -DCMAKE_BUILD_TYPE="${{matrix.buildtype}}"
+            -DCMAKE_PREFIX_PATH="C:/msvc-strawberry-${{matrix.arch}}-vs-17/qt"
+            -DBUILD_WITH_QT6=ON
+            -DBUILD_WERROR=OFF
+            -DARCH="${{matrix.arch}}"
+            -DENABLE_WIN32_CONSOLE=$(test "${{matrix.buildtype}}" = "debug" && echo "ON" || echo "OFF")
+            -DENABLE_DBUS=OFF
+            -DENABLE_LIBGPOD=OFF
+            -DENABLE_LIBMTP=ON
+            -DENABLE_AUDIOCD=ON
+            -DENABLE_SPOTIFY=OFF
+
+
+      - name: Run MSBuild
+        run: cmake --build build --config "${{matrix.buildtype}}" --parallel $(nproc)
+
+      - name: List files
+        working-directory: build
+        run: ls
+
+      - name: Copy binaries
+        working-directory: build
+        run: cp /msvc-strawberry-${{matrix.arch}}-vs-17/bin/{sqlite3.exe,libsoup-3.0-0.dll,libnghttp2.dll} .
+
+      - name: Build Windows installer
+        working-directory: build
+        run: makensis strawberry.nsi
+
+      - name: Upload MSVC Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: msvc-build-artifacts-${{matrix.arch}}-${{matrix.buildtype}}
+          path: build
+
+  release:
+    needs: [ build-windows-msvc ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download MSVC Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: msvc-build-artifacts-x86_64-release
+          path: msvc-artifacts
+
+      - name: Get current date
+        id: get-date
+        run: echo "CURRENT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+        
+        
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: daily-build-${{ env.CURRENT_DATE }}-${{ github.sha }}
+          release_name: Daily Build-${{ env.CURRENT_DATE }}-${{ github.sha }}
+          draft: false
+          prerelease: false
+
+      - name: Upload MSVC Artifacts to Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: msvc-artifacts/build
+          asset_name: windows-msvc-x86_64-${{ env.CURRENT_DATE }}-${{ github.sha }}.zip
+          asset_content_type: application/zip

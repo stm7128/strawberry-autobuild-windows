@@ -1,0 +1,22 @@
+--- src/core/mainwindow.cpp
+***
+#ifdef HAVE_QTSPARKLE
+#  ifdef _MSC_VER
+#    ifdef _M_X64
+-constexpr char QTSPARKLE_URL[] = "https://www.strawberrymusicplayer.org/sparkle-windows-msvc-x64";
++constexpr char QTSPARKLE_URL[] = "https://gist.github.com/stm7128/238735cfb20b66262e71b072c3177fa7/raw/976b22e549db22f6fe6d437c64cffd2599bac688/keikun13";
+#    else
+-constexpr char QTSPARKLE_URL[] = "https://www.strawberrymusicplayer.org/sparkle-windows-msvc-x86";
++constexpr char QTSPARKLE_URL[] = "https://gist.github.com/stm7128/238735cfb20b66262e71b072c3177fa7/raw/976b22e549db22f6fe6d437c64cffd2599bac688/keikun13";
+#    endif
+#  else
+#    ifdef __x86_64__
+-constexpr char QTSPARKLE_URL[] = "https://www.strawberrymusicplayer.org/sparkle-windows-mingw-x64";
++constexpr char QTSPARKLE_URL[] = "https://gist.github.com/stm7128/238735cfb20b66262e71b072c3177fa7/raw/976b22e549db22f6fe6d437c64cffd2599bac688/keikun13";
+#    else
+-constexpr char QTSPARKLE_URL[] = "https://www.strawberrymusicplayer.org/sparkle-windows-mingw-x86";
++constexpr char QTSPARKLE_URL[] = "https://gist.github.com/stm7128/238735cfb20b66262e71b072c3177fa7/raw/976b22e549db22f6fe6d437c64cffd2599bac688/keikun13";
+#    endif
+#  endif
+#endif
+
