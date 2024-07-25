@@ -1,8 +1,11 @@
 name: Daily Build and Release
 
 on:
+  push:
+    branches:
+      - main  # mainブランチにプッシュされたときに実行される
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'  # 毎日午前0時UTCに実行される
 
 jobs:
   build-windows-msvc:
