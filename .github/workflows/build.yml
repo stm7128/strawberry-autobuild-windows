@@ -33,6 +33,7 @@ jobs:
       - name: Patching
         shell: bash
         run: |
+          ls
           curl -L -o replaceupdatelink.diff "https://raw.githubusercontent.com/stm7128/strawberrymusicplayer-auto-build/master/replaceupdatelink.diff"
           git apply replaceupdatelink.diff
           
