@@ -33,10 +33,8 @@ jobs:
       - name: Patching
         shell: bash
         run: |
-          ls
           curl -L -o replaceupdatelink.diff "https://raw.githubusercontent.com/stm7128/strawberry-build-windows/master/replaceupdatelink.diff"
-          cat replaceupdatelink.diff
-          git apply replaceupdatelink.diff
+          patch -p1 < replaceupdatelink.diff
           
 
       - name: Create Build Environment
