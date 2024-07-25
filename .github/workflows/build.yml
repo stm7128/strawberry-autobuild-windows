@@ -3,9 +3,9 @@ name: Daily Build and Release
 on:
   push:
     branches:
-      - main  # mainブランチにプッシュされたときに実行される
+      - main
   schedule:
-    - cron: '0 0 * * *'  # 毎日午前0時UTCに実行される
+    - cron: '0 0 * * *'
 
 jobs:
   build-windows-msvc:
@@ -33,7 +33,7 @@ jobs:
       - name: Patching
         shell: bash
         run: |
-          wget "https://raw.githubusercontent.com/stm7128/strawberrymusicplayer-auto-build/master/replaceupdatelink.diff"
+          curl -L -o replaceupdatelink.diff "https://raw.githubusercontent.com/stm7128/strawberrymusicplayer-auto-build/master/replaceupdatelink.diff"
           git apply replaceupdatelink.diff
           
 
