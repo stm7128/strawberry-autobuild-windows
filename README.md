@@ -1,3 +1,3 @@
-# strawberry-build-windows
+# strawberry-autobuild-windows
 
-Daily strawberry music player build for windows.
+Daily strawberry music player auto build for windows.
