@@ -17,11 +17,126 @@ jobs:
         arch: [ 'x86_64' ]
         buildtype: [ 'release' ]
     steps:
-      - name: Set prefix path
+    
+          - name: Set prefix path
         shell: bash
         run: |
-          echo "prefix_path_backslash=C:/msvc-strawberry-${{matrix.arch}}-vs-17" >> $GITHUB_ENV
-          echo "prefix_path_forward=/msvc-strawberry-${{matrix.arch}}-vs-17" >> $GITHUB_ENV
+          echo "prefix_path_backslash=c:\strawberry_msvc_${{matrix.arch}}_${{matrix.buildtype}}" >> $GITHUB_ENV
+          echo "prefix_path_forwardslash=c:/strawberry_msvc_${{matrix.arch}}_${{matrix.buildtype}}" >> $GITHUB_ENV
+          echo "prefix_path_unix=/c/strawberry_msvc_${{matrix.arch}}_${{matrix.buildtype}}" >> $GITHUB_ENV
+
+      - name: Set cmake buildtype
+        shell: bash
+        run: echo "cmake_buildtype=$(echo ${{matrix.buildtype}} | sed 's/.*/\u&/')" >> $GITHUB_ENV
+
+      - name: Install rsync
+        shell: cmd
+        run: choco install --no-progress rsync
+
+      - name: Cleanup PATH
+        uses: egor-tensin/cleanup-path@v4
+        with:
+          dirs: ${{env.prefix_path_backslash}}\bin;C:\Windows;C:\Windows\system32;C:\Program Files\Git\bin;C:\Program Files\CMake\bin;C:\Program Files\GitHub CLI;C:\ProgramData\Chocolatey\bin;C:\Program Files (x86)\NSIS
+
+      - name: Create downloads directory
+        shell: cmd
+        run: mkdir downloads
+
+      - name: Download Windows MSVC dependencies
+        shell: cmd
+        working-directory: downloads
+        run: curl -f -O -L https://github.com/strawberrymusicplayer/strawberry-msvc-dependencies/releases/latest/download/strawberry-msvc-${{matrix.arch}}-${{matrix.buildtype}}.tar.xz
+
+      - name: Extract Windows MSVC dependencies
+        shell: bash
+        working-directory: downloads
+        run: tar -C /c -xf strawberry-msvc-${{matrix.arch}}-${{matrix.buildtype}}.tar.xz
+
+      - name: Update PATH
+        run: echo "${{env.prefix_path_backslash}}\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Copy bin files
+        shell: bash
+        run: cp /c/strawberry/c/bin/{patch.exe,strip.exe,strings.exe,objdump.exe} ${{env.prefix_path_unix}}/bin
+
+      - name: Delete conflicting files
+        shell: bash
+        run: rm -rf /c/{msys64,mingw32,mingw64} /c/strawberry/c "/c/program files/OpenSSL"
+
+      - name: Delete conflicting icu
+        shell: bash
+        run: find "/c/program files (x86)/windows kits/" -type f \( -iname 'icu*.lib' -o -iname 'icu*.h' \) -print -delete
+
+      - name: Download NSIS LockedList plugin
+        shell: cmd
+        working-directory: downloads
+        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip
+
+      - name: Extract NSIS LockedList plugin
+        shell: cmd
+        working-directory: downloads
+        run: 7z x LockedList.zip
+
+      - name: Download NSIS Registry plugin
+        shell: cmd
+        working-directory: downloads
+        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip
+
+      - name: Extract NSIS Registry plugin
+        shell: cmd
+        working-directory: downloads
+        run: 7z x Registry.zip
+
+      - name: Download NSIS Inetc plugin
+        shell: cmd
+        working-directory: downloads
+        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip
+
+      - name: Extract NSIS Inetc plugin
+        shell: cmd
+        working-directory: downloads
+        run: 7z x Inetc.zip
+
+      - name: Install NSIS plugins
+        shell: cmd
+        working-directory: downloads
+        run: |
+          copy "Plugins\LockedList64.dll" "C:\Program Files (x86)\NSIS\Plugins\"
+          copy "Plugins\x86-unicode\LockedList.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
+          copy "Desktop\Plugin\registry.dll" "C:\Program Files (x86)\NSIS\Plugins\"
+          copy "Desktop\Plugin\registry.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
+          copy "Plugins\x86-unicode\INetC.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
+
+      - name: Setup MSVC Environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{matrix.arch}}
+          sdk: 10.0.20348.0
+          vsversion: 2022
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Add safe git directory
+        shell: bash
+        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
+
+      - name: Create Build Environment
+        shell: cmd
+        run: cmake -E make_directory build
+
+      - name: Set ENABLE_WIN32_CONSOLE (debug)
+        if: matrix.buildtype == 'debug'
+        shell: bash
+        run: echo "win32_console=ON" >> $GITHUB_ENV
+
+      - name: Set ENABLE_WIN32_CONSOLE (release)
+        if: matrix.buildtype == 'release'
+        shell: bash
+        run: echo "win32_console=OFF" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v4
