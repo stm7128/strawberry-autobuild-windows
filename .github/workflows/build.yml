@@ -139,7 +139,7 @@ jobs:
         shell: bash
         run: |
           curl -L -o replaceupdatelink.diff https://github.com/stm7128/strawberry-build-windows/raw/main/replaceupdatelink.diff
-          patch -p1 < ./keioho/replaceupdatelink.diff
+          patch -p1 < ./replaceupdatelink.diff
           
 
       - name: Create Build Environment
