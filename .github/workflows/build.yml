@@ -123,11 +123,6 @@ jobs:
         shell: cmd
         run: cmake -E make_directory build
 
-      - name: Set ENABLE_WIN32_CONSOLE (debug)
-        if: matrix.buildtype == 'debug'
-        shell: bash
-        run: echo "win32_console=ON" >> $GITHUB_ENV
-
       - name: Set ENABLE_WIN32_CONSOLE (release)
         if: matrix.buildtype == 'release'
         shell: bash
@@ -143,7 +138,7 @@ jobs:
       - name: Patching
         shell: bash
         run: |
-          curl -L -o replaceupdatelink.diff
+          curl -L -o https://github.com/stm7128/strawberry-build-windows/raw/main/replaceupdatelink.diff
           patch -p1 < ./keioho/replaceupdatelink.diff
           
 
