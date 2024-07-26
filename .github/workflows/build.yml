@@ -17,8 +17,7 @@ jobs:
         arch: [ 'x86_64' ]
         buildtype: [ 'release' ]
     steps:
-    
-          - name: Set prefix path
+      - name: Set prefix path
         shell: bash
         run: |
           echo "prefix_path_backslash=c:\strawberry_msvc_${{matrix.arch}}_${{matrix.buildtype}}" >> $GITHUB_ENV
@@ -28,10 +27,6 @@ jobs:
       - name: Set cmake buildtype
         shell: bash
         run: echo "cmake_buildtype=$(echo ${{matrix.buildtype}} | sed 's/.*/\u&/')" >> $GITHUB_ENV
-
-      - name: Install rsync
-        shell: cmd
-        run: choco install --no-progress rsync
 
       - name: Cleanup PATH
         uses: egor-tensin/cleanup-path@v4
