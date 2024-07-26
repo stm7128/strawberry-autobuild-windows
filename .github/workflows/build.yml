@@ -138,7 +138,7 @@ jobs:
       - name: Patching
         shell: bash
         run: |
-          curl -L -o https://github.com/stm7128/strawberry-build-windows/raw/main/replaceupdatelink.diff
+          curl -L -o replaceupdatelink.diff https://github.com/stm7128/strawberry-build-windows/raw/main/replaceupdatelink.diff
           patch -p1 < ./keioho/replaceupdatelink.diff
           
 
