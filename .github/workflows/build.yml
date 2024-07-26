@@ -38,7 +38,7 @@ jobs:
       - name: Patching
         shell: bash
         run: |
-          patch -p1 < .\keioho\replaceupdatelink.diff
+          patch -p1 < ./keioho/replaceupdatelink.diff
           
 
       - name: Create Build Environment
