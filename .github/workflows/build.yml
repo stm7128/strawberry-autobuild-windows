@@ -142,30 +142,158 @@ jobs:
             cmake
             -S .
             -B build
-            -DCMAKE_TOOLCHAIN_FILE="../cmake/Toolchain-${{matrix.arch}}-msvc.cmake"
-            -DCMAKE_BUILD_TYPE="${{matrix.buildtype}}"
-            -DCMAKE_PREFIX_PATH="C:/msvc-strawberry-${{matrix.arch}}-vs-17/qt"
-            -DBUILD_WITH_QT6=ON
-            -DBUILD_WERROR=OFF
+            -G "Ninja"
+            -DCMAKE_BUILD_TYPE="${{env.cmake_buildtype}}"
+            -DCMAKE_PREFIX_PATH="${{env.prefix_path_forwardslash}}/lib/cmake"
             -DARCH="${{matrix.arch}}"
-            -DENABLE_WIN32_CONSOLE=$(test "${{matrix.buildtype}}" = "debug" && echo "ON" || echo "OFF")
-            -DENABLE_DBUS=OFF
-            -DENABLE_LIBGPOD=OFF
+            -DENABLE_WIN32_CONSOLE=${{env.win32_console}}
             -DENABLE_LIBMTP=ON
             -DENABLE_AUDIOCD=ON
             -DENABLE_SPOTIFY=OFF
 
 
-      - name: Run MSBuild
-        run: cmake --build build --config "${{matrix.buildtype}}" --parallel $(nproc)
+      - name: Run Make
+        shell: cmd
+        env:
+          CL: "/MP"
+        run: cmake --build build --config "${{env.cmake_buildtype}}" --parallel 4
+      - name: Copy extra binaries
+        shell: cmd
+        working-directory: build
+        run: |
+          copy ${{env.prefix_path_backslash}}\bin\libssl-3*.dll
+          copy ${{env.prefix_path_backslash}}\bin\libcrypto-3*.dll
+          copy ${{env.prefix_path_backslash}}\bin\soup-3.0-0.dll
+          copy ${{env.prefix_path_backslash}}\bin\gst-launch-1.0.exe
+          copy ${{env.prefix_path_backslash}}\bin\gst-play-1.0.exe
+          copy ${{env.prefix_path_backslash}}\bin\gst-discoverer-1.0.exe
+          copy ${{env.prefix_path_backslash}}\bin\sqlite3.exe
+      - name: Copy extra binaries
+        shell: cmd
+        working-directory: build
+        run: |
+          copy ${{env.prefix_path_backslash}}\bin\libssl-3*.dll
+          copy ${{env.prefix_path_backslash}}\bin\libcrypto-3*.dll
+          copy ${{env.prefix_path_backslash}}\bin\soup-3.0-0.dll
+          copy ${{env.prefix_path_backslash}}\bin\gst-launch-1.0.exe
+          copy ${{env.prefix_path_backslash}}\bin\gst-play-1.0.exe
+          copy ${{env.prefix_path_backslash}}\bin\gst-discoverer-1.0.exe
+          copy ${{env.prefix_path_backslash}}\bin\sqlite3.exe
+
+      - name: Create directories
+        shell: cmd
+        working-directory: build
+        run: |
+          mkdir gio-modules
+          mkdir platforms
+          mkdir styles
+          mkdir tls
+          mkdir sqldrivers
+          mkdir imageformats
+          mkdir gstreamer-plugins
+          mkdir nsisplugins
+
+      - name: Copy GIO modules
+        shell: cmd
+        working-directory: build
+        run: copy ${{env.prefix_path_backslash}}\lib\gio\modules\*.dll .\gio-modules\
+
+      - name: Copy Qt platform plugins
+        shell: cmd
+        working-directory: build
+        run: copy ${{env.prefix_path_backslash}}\plugins\platforms\qwindows*.dll .\platforms\
+
+      - name: Copy Qt styles
+        shell: cmd
+        working-directory: build
+        run: copy ${{env.prefix_path_backslash}}\plugins\styles\qmodernwindowsstyle*.dll .\styles\
+
+      - name: Copy Qt TLS plugins
+        shell: cmd
+        working-directory: build
+        run: copy ${{env.prefix_path_backslash}}\plugins\tls\*.dll .\tls\
+
+      - name: Copy Qt SQL drivers
+        shell: cmd
+        working-directory: build
+        run: copy ${{env.prefix_path_backslash}}\plugins\sqldrivers\qsqlite*.dll .\sqldrivers\
+
+      - name: Copy Qt imageformats plugins
+        shell: cmd
+        working-directory: build
+        run: copy ${{env.prefix_path_backslash}}\plugins\imageformats\*.dll .\imageformats\
+
+      - name: Copy gstreamer plugins
+        shell: cmd
+        working-directory: build
+        run: copy ${{env.prefix_path_backslash}}\lib\gstreamer-1.0\*.dll .\gstreamer-plugins\
+
+      - name: Download copydlldeps.sh
+        shell: bash
+        working-directory: build
+        run: curl -f -O -L https://raw.githubusercontent.com/strawberrymusicplayer/strawberry-mxe/master/tools/copydlldeps.sh
+
+      - name: Copy dependencies
+        shell: bash
+        working-directory: build
+        run: >
+          ./copydlldeps.sh
+          -c
+          -d .
+          -F .
+          -F ./platforms
+          -F ./styles
+          -F ./tls
+          -F ./sqldrivers
+          -F ./imageformats
+          -F ./gio-modules
+          -F ./gstreamer-plugins
+          -R ${{env.prefix_path_unix}}/bin
+
+      - name: Copy nsis files
+        shell: cmd
+        working-directory: build
+        run: |
+          copy ..\dist\windows\*.nsi .
+          copy ..\dist\windows\*.nsh .
+          copy ..\dist\windows\*.ico .
+
+      - name: Copy COPYING license file
+        shell: cmd
+        working-directory: build
+        run: copy ..\COPYING .
 
       - name: List files
+        shell: cmd
         working-directory: build
-        run: ls
+        run: dir
 
-      - name: Copy binaries
+      - name: Check that all files are included in nsi
+        shell: bash
         working-directory: build
-        run: cp /msvc-strawberry-${{matrix.arch}}-vs-17/bin/{sqlite3.exe,libsoup-3.0-0.dll,libnghttp2.dll} .
+        run: |
+          files_missing=
+          for i in $(ls -1 *.dll *.exe); do
+            nsi_file_entry=$(grep -i "^\s\+File\s\+\"$i\"$" strawberry.nsi || true)
+            if [ "${nsi_file_entry}" = "" ]; then
+              echo "File ${i} is missing File entry."
+            fi
+            nsi_file_delete_entry=$(grep -i "^\s\+Delete\s\+\"\$INSTDIR\\\\$i\"$" strawberry.nsi || true)
+            if [ "${nsi_file_delete_entry}" = "" ] ; then
+              echo "File ${i} is missing Delete entry."
+            fi
+            if [ "${nsi_file_entry}" = "" ] || [ "${nsi_file_delete_entry}" = "" ] ; then
+              if [ "${files_missing}" = "" ]; then
+                files_missing="${i}"
+              else
+                files_missing="${files_missing} $i"
+              fi
+            fi
+          done
+          if ! [ "${files_missing}" = "" ]; then
+            echo "Files missing in nsi: ${files_missing}"
+            exit 1
+          fi
 
       - name: Build Windows installer
         working-directory: build
