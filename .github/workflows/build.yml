@@ -51,7 +51,7 @@ jobs:
           -DCMAKE_PREFIX_PATH="/strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6"
           -DBUILD_WERROR=ON
           -DARCH="${{matrix.arch}}"
-          -DENABLE_WIN32_CONSOLE=$(test "${{matrix.buildtype}}" = "debug" && echo "ON" || echo "OFF")
+          -DENABLE_WIN32_CONSOLE=OFF
           -DENABLE_DBUS=OFF
           -DENABLE_AUDIOCD=OFF
           -DENABLE_MTP=OFF
