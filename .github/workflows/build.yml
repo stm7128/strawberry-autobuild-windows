@@ -1,11 +1,11 @@
 name: Build
 on:
-push:
-  branches:
-    - main
-  schedule:
-    - cron: '0 0 * * *'
-
+  push:
+    branches:
+      - main
+    schedule:
+      - cron: '0 0 * * *'
+   
 jobs:
   build-windows-mingw:
     name: Build Windows MinGW
