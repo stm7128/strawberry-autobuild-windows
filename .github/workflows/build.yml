@@ -1,272 +1,135 @@
-name: Daily Build and Release
-
+name: Build
 on:
-  push:
-    branches:
-      - main
   schedule:
     - cron: '0 0 * * *'
 
 jobs:
-  build-windows-msvc:
-    name: Build Windows MSVC
-    runs-on: windows-2022
+  build-windows-mingw:
+    name: Build Windows MinGW
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        arch: [ 'x86_64' ]
+        arch: [  'i686', 'x86_64' ]
         buildtype: [ 'release' ]
+    container:
+      image: jonaski/strawberry-mxe-${{matrix.arch}}-${{matrix.buildtype}}
     steps:
-      - name: Set prefix path
-        shell: bash
-        run: |
-          echo "prefix_path_backslash=c:\strawberry_msvc_${{matrix.arch}}_${{matrix.buildtype}}" >> $GITHUB_ENV
-          echo "prefix_path_forwardslash=c:/strawberry_msvc_${{matrix.arch}}_${{matrix.buildtype}}" >> $GITHUB_ENV
-          echo "prefix_path_unix=/c/strawberry_msvc_${{matrix.arch}}_${{matrix.buildtype}}" >> $GITHUB_ENV
 
       - name: Set cmake buildtype
         shell: bash
         run: echo "cmake_buildtype=$(echo ${{matrix.buildtype}} | sed 's/.*/\u&/')" >> $GITHUB_ENV
 
-      - name: Cleanup PATH
-        uses: egor-tensin/cleanup-path@v4
-        with:
-          dirs: ${{env.prefix_path_backslash}}\bin;C:\Windows;C:\Windows\system32;C:\Program Files\Git\bin;C:\Program Files\CMake\bin;C:\Program Files\GitHub CLI;C:\ProgramData\Chocolatey\bin;C:\Program Files (x86)\NSIS
-
-      - name: Create downloads directory
-        shell: cmd
-        run: mkdir downloads
-
-      - name: Download Windows MSVC dependencies
-        shell: cmd
-        working-directory: downloads
-        run: curl -f -O -L https://github.com/strawberrymusicplayer/strawberry-msvc-dependencies/releases/latest/download/strawberry-msvc-${{matrix.arch}}-${{matrix.buildtype}}.tar.xz
-
-      - name: Extract Windows MSVC dependencies
-        shell: bash
-        working-directory: downloads
-        run: tar -C /c -xf strawberry-msvc-${{matrix.arch}}-${{matrix.buildtype}}.tar.xz
-
-      - name: Update PATH
-        run: echo "${{env.prefix_path_backslash}}\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
-      - name: Copy bin files
-        shell: bash
-        run: cp /c/strawberry/c/bin/{patch.exe,strip.exe,strings.exe,objdump.exe} ${{env.prefix_path_unix}}/bin
-
-      - name: Delete conflicting files
-        shell: bash
-        run: rm -rf /c/{msys64,mingw32,mingw64} /c/strawberry/c "/c/program files/OpenSSL"
-
-      - name: Delete conflicting icu
-        shell: bash
-        run: find "/c/program files (x86)/windows kits/" -type f \( -iname 'icu*.lib' -o -iname 'icu*.h' \) -print -delete
-
-      - name: Download NSIS LockedList plugin
-        shell: cmd
-        working-directory: downloads
-        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip
-
-      - name: Extract NSIS LockedList plugin
-        shell: cmd
-        working-directory: downloads
-        run: 7z x LockedList.zip
-
-      - name: Download NSIS Registry plugin
-        shell: cmd
-        working-directory: downloads
-        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip
-
-      - name: Extract NSIS Registry plugin
-        shell: cmd
-        working-directory: downloads
-        run: 7z x Registry.zip
-
-      - name: Download NSIS Inetc plugin
-        shell: cmd
-        working-directory: downloads
-        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip
-
-      - name: Extract NSIS Inetc plugin
-        shell: cmd
-        working-directory: downloads
-        run: 7z x Inetc.zip
-
-      - name: Install NSIS plugins
-        shell: cmd
-        working-directory: downloads
-        run: |
-          copy "Plugins\LockedList64.dll" "C:\Program Files (x86)\NSIS\Plugins\"
-          copy "Plugins\x86-unicode\LockedList.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
-          copy "Desktop\Plugin\registry.dll" "C:\Program Files (x86)\NSIS\Plugins\"
-          copy "Desktop\Plugin\registry.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
-          copy "Plugins\x86-unicode\INetC.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
-
-      - name: Setup MSVC Environment
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{matrix.arch}}
-          sdk: 10.0.20348.0
-          vsversion: 2022
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: recursive
-
-      - name: Add safe git directory
-        shell: bash
-        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
-
-      - name: Create Build Environment
-        shell: cmd
-        run: cmake -E make_directory build
-
-      - name: Set ENABLE_WIN32_CONSOLE (release)
-        if: matrix.buildtype == 'release'
-        shell: bash
-        run: echo "win32_console=OFF" >> $GITHUB_ENV
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
           repository: strawberrymusicplayer/strawberry
-          fetch-depth: 1          
+          fetch-depth: 1
+          submodules: recursive
+
+      - name: Add safe git directory
+        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
 
       - name: Create Build Environment
         run: cmake -E make_directory build
 
-      - name: Run CMake
-        run: >
-            cmake
-            -S .
-            -B build
-            -G "Ninja"
-            -DCMAKE_BUILD_TYPE="${{env.cmake_buildtype}}"
-            -DCMAKE_PREFIX_PATH="${{env.prefix_path_forwardslash}}/lib/cmake"
-            -DARCH="${{matrix.arch}}"
-            -DENABLE_WIN32_CONSOLE=${{env.win32_console}}
-            -DENABLE_LIBMTP=ON
-            -DENABLE_AUDIOCD=ON
-            -DENABLE_SPOTIFY=OFF
+      - name: Link MXE directory
+        run: ln -s /strawberry-mxe ~/mxe-shared
 
+      - name: Run CMake
+        env:
+          PKG_CONFIG_PATH: /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/lib/pkgconfig
+        run: >
+          cmake
+          -S .
+          -B build
+          -DCMAKE_TOOLCHAIN_FILE="../cmake/Toolchain-${{matrix.arch}}-w64-mingw32-shared.cmake"
+          -DCMAKE_BUILD_TYPE="${{env.cmake_buildtype}}"
+          -DCMAKE_PREFIX_PATH="/strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6"
+          -DBUILD_WERROR=ON
+          -DARCH="${{matrix.arch}}"
+          -DENABLE_WIN32_CONSOLE=$(test "${{matrix.buildtype}}" = "debug" && echo "ON" || echo "OFF")
+          -DENABLE_DBUS=OFF
+          -DENABLE_AUDIOCD=OFF
+          -DENABLE_MTP=OFF
+          -DENABLE_GPOD=OFF
+          -DENABLE_SPOTIFY=OFF
 
       - name: Run Make
-        shell: cmd
-        env:
-          CL: "/MP"
-        run: cmake --build build --config "${{env.cmake_buildtype}}" --parallel 4
-      - name: Copy extra binaries
-        shell: cmd
-        working-directory: build
-        run: |
-          copy ${{env.prefix_path_backslash}}\bin\libssl-3*.dll
-          copy ${{env.prefix_path_backslash}}\bin\libcrypto-3*.dll
-          copy ${{env.prefix_path_backslash}}\bin\soup-3.0-0.dll
-          copy ${{env.prefix_path_backslash}}\bin\gst-launch-1.0.exe
-          copy ${{env.prefix_path_backslash}}\bin\gst-play-1.0.exe
-          copy ${{env.prefix_path_backslash}}\bin\gst-discoverer-1.0.exe
-          copy ${{env.prefix_path_backslash}}\bin\sqlite3.exe
-      - name: Copy extra binaries
-        shell: cmd
-        working-directory: build
-        run: |
-          copy ${{env.prefix_path_backslash}}\bin\libssl-3*.dll
-          copy ${{env.prefix_path_backslash}}\bin\libcrypto-3*.dll
-          copy ${{env.prefix_path_backslash}}\bin\soup-3.0-0.dll
-          copy ${{env.prefix_path_backslash}}\bin\gst-launch-1.0.exe
-          copy ${{env.prefix_path_backslash}}\bin\gst-play-1.0.exe
-          copy ${{env.prefix_path_backslash}}\bin\gst-discoverer-1.0.exe
-          copy ${{env.prefix_path_backslash}}\bin\sqlite3.exe
+        run: cmake --build build --config "${{env.cmake_buildtype}}" --parallel $(nproc)
 
       - name: Create directories
-        shell: cmd
         working-directory: build
-        run: |
-          mkdir gio-modules
-          mkdir platforms
-          mkdir styles
-          mkdir tls
-          mkdir sqldrivers
-          mkdir imageformats
-          mkdir gstreamer-plugins
-          mkdir nsisplugins
+        run: mkdir -p gio-modules platforms sqldrivers tls imageformats styles gstreamer-plugins nsisplugins
 
       - name: Copy GIO modules
-        shell: cmd
         working-directory: build
-        run: copy ${{env.prefix_path_backslash}}\lib\gio\modules\*.dll .\gio-modules\
+        run: cp /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/lib/gio/modules/{libgiognutls.dll,libgioopenssl.dll} ${GITHUB_WORKSPACE}/build/gio-modules/
 
       - name: Copy Qt platform plugins
-        shell: cmd
         working-directory: build
-        run: copy ${{env.prefix_path_backslash}}\plugins\platforms\qwindows*.dll .\platforms\
+        run: cp /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6/plugins/platforms/qwindows.dll ${GITHUB_WORKSPACE}/build/platforms/
 
       - name: Copy Qt styles
-        shell: cmd
         working-directory: build
-        run: copy ${{env.prefix_path_backslash}}\plugins\styles\qmodernwindowsstyle*.dll .\styles\
+        run: cp /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6/plugins/styles/qmodernwindowsstyle.dll ${GITHUB_WORKSPACE}/build/styles/
 
       - name: Copy Qt TLS plugins
-        shell: cmd
         working-directory: build
-        run: copy ${{env.prefix_path_backslash}}\plugins\tls\*.dll .\tls\
+        run: cp /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6/plugins/tls/{qschannelbackend.dll,qopensslbackend.dll} ${GITHUB_WORKSPACE}/build/tls/
 
       - name: Copy Qt SQL drivers
-        shell: cmd
         working-directory: build
-        run: copy ${{env.prefix_path_backslash}}\plugins\sqldrivers\qsqlite*.dll .\sqldrivers\
+        run: cp /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6/plugins/sqldrivers/qsqlite.dll ${GITHUB_WORKSPACE}/build/sqldrivers/
 
-      - name: Copy Qt imageformats plugins
-        shell: cmd
+      - name: Copy Qt imageformats
         working-directory: build
-        run: copy ${{env.prefix_path_backslash}}\plugins\imageformats\*.dll .\imageformats\
+        run: cp /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6/plugins/imageformats/{qgif.dll,qico.dll,qjpeg.dll} ${GITHUB_WORKSPACE}/build/imageformats/
 
       - name: Copy gstreamer plugins
-        shell: cmd
         working-directory: build
-        run: copy ${{env.prefix_path_backslash}}\lib\gstreamer-1.0\*.dll .\gstreamer-plugins\
+        run: cp /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/bin/gstreamer-1.0/*.dll ${GITHUB_WORKSPACE}/build/gstreamer-plugins/
 
-      - name: Download copydlldeps.sh
-        shell: bash
+      - name: Copy extra binaries
         working-directory: build
-        run: curl -f -O -L https://raw.githubusercontent.com/strawberrymusicplayer/strawberry-mxe/master/tools/copydlldeps.sh
+        run: cp /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/bin/{sqlite3.exe,gst-launch-1.0.exe,gst-play-1.0.exe,gst-discoverer-1.0.exe,libsoup-3.0-0.dll,libnghttp2.dll} .
 
       - name: Copy dependencies
-        shell: bash
         working-directory: build
         run: >
-          ./copydlldeps.sh
+          /strawberry-mxe/tools/copydlldeps.sh
           -c
           -d .
           -F .
           -F ./platforms
           -F ./styles
+          -F ./imageformats
           -F ./tls
           -F ./sqldrivers
-          -F ./imageformats
-          -F ./gio-modules
           -F ./gstreamer-plugins
-          -R ${{env.prefix_path_unix}}/bin
+          -R /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared
+
+      - name: Strip binaries
+        if: matrix.buildtype == 'release'
+        working-directory: build
+        run: find . -type f \( -iname \*.dll -o -iname \*.exe \) -exec /strawberry-mxe/usr/bin/${{matrix.arch}}-w64-mingw32.shared-strip {} \;
+
+      - name: Strip gdb.exe
+        if: matrix.buildtype == 'debug'
+        working-directory: build
+        run: /strawberry-mxe/usr/bin/${{matrix.arch}}-w64-mingw32.shared-strip gdb.exe
 
       - name: Copy nsis files
-        shell: cmd
         working-directory: build
-        run: |
-          copy ..\dist\windows\*.nsi .
-          copy ..\dist\windows\*.nsh .
-          copy ..\dist\windows\*.ico .
+        run: cp ${GITHUB_WORKSPACE}/dist/windows/*.nsh ${GITHUB_WORKSPACE}/dist/windows/*.ico .
 
       - name: Copy COPYING license file
-        shell: cmd
         working-directory: build
-        run: copy ..\COPYING .
+        run: cp ${GITHUB_WORKSPACE}/COPYING .
 
       - name: List files
-        shell: cmd
         working-directory: build
-        run: dir
+        run: ls
 
       - name: Check that all files are included in nsi
         shell: bash
@@ -298,46 +161,29 @@ jobs:
       - name: Build Windows installer
         working-directory: build
         run: makensis strawberry.nsi
-
-      - name: Upload MSVC Artifacts
+      - name: Upload Release Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: msvc-build-artifacts-${{matrix.arch}}-${{matrix.buildtype}}
-          path: build
+          name: strawberry-setup-artifacts
+          path: |
+            build/StrawberrySetup*.exe
 
-  release:
-    needs: [ build-windows-msvc ]
+  upload:
+    name: Upload
     runs-on: ubuntu-latest
+    needs:
+      - build-windows-mingw
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Download MSVC Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: msvc-build-artifacts-x86_64-release
-          path: msvc-artifacts
-
       - name: Get current date
-        id: get-date
-        run: echo "CURRENT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-        
-        
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: daily-build-${{ env.CURRENT_DATE }}-${{ github.sha }}
-          release_name: Daily Build-${{ env.CURRENT_DATE }}-${{ github.sha }}
+          tag: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          body: "Release ${{ steps.date.outputs.date }}"
           draft: false
           prerelease: false
-
-      - name: Upload MSVC Artifacts to Release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: msvc-artifacts/build
-          asset_name: windows-msvc-x86_64-${{ env.CURRENT_DATE }}-${{ github.sha }}.zip
-          asset_content_type: application/zip
+          artifacts: StrawberrySetup*.exe
