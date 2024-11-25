@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [  'i686', 'x86_64' ]
+        arch: [ 'x86_64' ]
         buildtype: [ 'release' ]
     container:
       image: jonaski/strawberry-mxe-${{matrix.arch}}-${{matrix.buildtype}}
@@ -57,6 +57,7 @@ jobs:
           -DENABLE_MTP=OFF
           -DENABLE_GPOD=OFF
           -DENABLE_SPOTIFY=OFF
+          -DUSE_QTSPARKLE=OFF
 
       - name: Run Make
         run: cmake --build build --config "${{env.cmake_buildtype}}" --parallel $(nproc)
@@ -189,4 +190,4 @@ jobs:
           body: "Release ${{ steps.date.outputs.date }}"
           draft: false
           prerelease: false
-          artifacts: StrawberrySetup*.exe
+          artifacts: strawberry-setup-artifacts
