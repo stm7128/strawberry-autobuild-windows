@@ -44,12 +44,14 @@ jobs:
 
       - name: Link MXE directory
         run: ln -s /strawberry-mxe ~/mxe-shared
-      
-      - name: patch
-        run: patch -p0 < remsparkle.diff
 
       - name: Check file
         run: ls -R
+        
+      - name: patch
+        run: patch -p0 < remsparkle.diff
+
+
 
       - name: Run CMake
         env:
