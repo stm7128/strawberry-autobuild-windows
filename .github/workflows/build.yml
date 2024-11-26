@@ -47,11 +47,9 @@ jobs:
 
       - name: Check file
         run: ls -R
-        
+
       - name: patch
         run: patch -p0 < remsparkle.diff
-
-
 
       - name: Run CMake
         env:
