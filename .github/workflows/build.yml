@@ -44,6 +44,9 @@ jobs:
 
       - name: Link MXE directory
         run: ln -s /strawberry-mxe ~/mxe-shared
+      
+      - name: patch
+        run: patch -p0 < remsparkle.diff
 
       - name: Run CMake
         env:
@@ -166,7 +169,7 @@ jobs:
       - name: Build Windows installer
         working-directory: build
         run: makensis strawberry.nsi
-        
+
       - name: Upload Release Artifacts
         uses: actions/upload-artifact@v3
         with:
