@@ -175,7 +175,7 @@ jobs:
         run: makensis strawberry.nsi
 
       - name: Upload Release Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: strawberry-setup-artifacts
           path: |
@@ -191,6 +191,11 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: strawberry-setup-artifacts
+
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
@@ -199,4 +204,4 @@ jobs:
           body: "Daily Build"
           draft: false
           prerelease: false
-          artifacts: build/StrawberrySetup*.exe
+          artifacts: StrawberrySetup*.exe
