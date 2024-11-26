@@ -199,7 +199,7 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.ref_name }}
+          tag: ${{ steps.date.outputs.date }}
           name: "Daily Build ${{ steps.date.outputs.date }}"
           body: "Daily Build"
           draft: false
