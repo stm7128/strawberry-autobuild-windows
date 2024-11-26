@@ -48,6 +48,9 @@ jobs:
       - name: patch
         run: patch -p0 < remsparkle.diff
 
+      - name: Check file
+        run: ls -R
+
       - name: Run CMake
         env:
           PKG_CONFIG_PATH: /strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/lib/pkgconfig

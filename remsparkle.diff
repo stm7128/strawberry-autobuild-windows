@@ -1,5 +1,5 @@
---- dist\windows\strawberry.nsi.in
-+++ dist\windows\strawberry.nsi.in
+--- dist/windows/strawberry.nsi.in
++++ dist/windows/strawberry.nsi.in
 @@ -319,7 +319,6 @@
    File "liborc-0.4-0.dll"
    File "libpng16-16.dll"
