@@ -195,8 +195,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ github.ref_name }}
-          name: "Release ${{ steps.date.outputs.date }}"
+          name: "Daily Build ${{ steps.date.outputs.date }}"
           body: "Daily Build"
           draft: false
           prerelease: false
-          artifacts: StrawberrySetup*.exe
+          artifacts: build/StrawberrySetup*.exe
