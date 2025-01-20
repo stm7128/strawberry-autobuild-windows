@@ -334,7 +334,7 @@ jobs:
         run: echo "win32_console=OFF" >> $GITHUB_ENV
 
       - name: patch
-        run: patch -p0 < diff/remsparkle.diff
+        run: patch -p0 -i diff/remsparkle.diff
 
       - name: Run CMake
         shell: cmd
