@@ -190,7 +190,7 @@ jobs:
       - name: Upload Release Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: strawberry-mingw-artifacts
+          name: strawberry-mingw-artifacts-${{ matrix.arch }}-${{ matrix.buildtype }}
           path: |
             build/StrawberrySetup*.exe
 
@@ -503,7 +503,7 @@ jobs:
       - name: Upload Release Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: strawberry-msvc-artifacts
+          name: strawberry-msvc-artifacts-${{ matrix.arch }}-${{ matrix.buildtype }}
           path: |
             build/StrawberrySetup*.exe
 
@@ -518,15 +518,45 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
-      - name: Download mingw artifact
+      - name: Download mingw Debug Artifacts (x86)
         uses: actions/download-artifact@v4
         with:
-          name: strawberry-mingw-artifacts
+            name: strawberry-mingw-artifacts-i686-debug
 
-      - name: Download msvc artifact
+      - name: Download mingw Release Artifacts (x86)
         uses: actions/download-artifact@v4
         with:
-          name: strawberry-msvc-artifacts
+            name: strawberry-mingw-artifacts-i686-release
+
+      - name: Download mingw Debug Artifacts (x64)
+        uses: actions/download-artifact@v4
+        with:
+            name: strawberry-mingw-artifacts-x86_64-debug
+
+      - name: Download mingw Release Artifacts (x64)
+        uses: actions/download-artifact@v4
+        with:
+            name: strawberry-mingw-artifacts-x86_64-release
+
+      - name: Download msvc Debug Artifacts (x86)
+        uses: actions/download-artifact@v4
+        with:
+            name: strawberry-msvc-artifacts-i686-debug
+
+      - name: Download msvc Release Artifacts (x86)
+        uses: actions/download-artifact@v4
+        with:
+            name: strawberry-msvc-artifacts-i686-release
+
+      - name: Download msvc Debug Artifacts (x64)
+        uses: actions/download-artifact@v4
+        with:
+            name: strawberry-msvc-artifacts-x86_64-debug
+
+      - name: Download msvc Release Artifacts (x64)
+        uses: actions/download-artifact@v4
+        with:
+            name: strawberry-msvc-artifacts-x86_64-release
 
       - name: Create Release
         uses: ncipollo/release-action@v1
