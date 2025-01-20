@@ -8,7 +8,8 @@ Official Repository:
 
 ---
 
-This unofficial build is not supported by the official developer. If you encounter any bugs or issues, please refrain from contacting official support.
+**Note: The updater for this unofficial build is currently disabled.**  
+The updater has been intentionally disabled in this unofficial build as a part of a strategy to encourage users to support the development of Strawberry via [Patreon](https://www.patreon.com/jonaskvinge). By supporting development through Patreon, users gain access to official updates.
 
 ## Support Official Development
 
