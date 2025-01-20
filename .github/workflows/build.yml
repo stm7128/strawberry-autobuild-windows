@@ -541,12 +541,12 @@ jobs:
       - name: Download msvc Debug Artifacts (x86)
         uses: actions/download-artifact@v4
         with:
-            name: strawberry-msvc-artifacts-i686-debug
+            name: strawberry-msvc-artifacts-x86-debug
 
       - name: Download msvc Release Artifacts (x86)
         uses: actions/download-artifact@v4
         with:
-            name: strawberry-msvc-artifacts-i686-release
+            name: strawberry-msvc-artifacts-x86-release
 
       - name: Download msvc Debug Artifacts (x64)
         uses: actions/download-artifact@v4
