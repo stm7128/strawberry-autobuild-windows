@@ -4,7 +4,7 @@ This repository provides an unofficial build of [Strawberry](https://github.com/
 Official builds are not currently available, but [instructions for building from source](https://github.com/strawberrymusicplayer/strawberry#wrench-compiling-from-source) can be found in the official repository.
 
 **Note: The updater for this unofficial build is intentionally disabled.**  
-The updater is disabled to prevent being guided to Patreon. For updates, please refer to the official Strawberry repository.
+The updater is disabled to prevent being guided to Patreon.
 
 ---
 
