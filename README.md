@@ -6,7 +6,6 @@ Official builds are not currently available, but [instructions for building from
 **Note: The updater for this unofficial build is intentionally disabled.**  
 The updater is disabled to prevent being guided to Patreon.
 
----
 
 For any bugs, issues, or feature requests, please submit them on the official [Strawberry Issues page](https://github.com/strawberrymusicplayer/strawberry/issues).  
 This repository does not offer official support, but the developers at Strawberry may be able to assist with issues via GitHub.
