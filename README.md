@@ -39,11 +39,9 @@ Strawberry Music Player is licensed under the GPLv3. These unofficial builds are
 
 ## Support Official Development
 
-Thank you for using this unofficial build of Strawberry Music Player. If you enjoy the software, please consider supporting the official development of Strawberry Music Player through the following options:
+Thank you for using this unofficial build of Strawberry Music Player. If you enjoy the software, please consider supporting the official development of Strawberry Music Player through the following options. Supporting the **official developer directly** helps ensure the continued development and maintenance of Strawberry.
 
-- [Patreon](https://www.patreon.com/jonaskvinge)
+- [Patreon](https://www.patreon.com/jonaskvinge) - Supporters often receive access to official builds; check their page for current benefits and tiers.
 - [GitHub Sponsors](https://github.com/sponsors/jonaski)
-- [Ko-fi](https://ko-fi.com/jonaskvinge)
+- [Ko-fi](https://ko-fi.com/jonaskvinge) - Official builds may also be available to supporters here; please see their page for details.
 - [PayPal](https://paypal.me/jonaskvinge)
-
-Your support helps ensure the continued development and maintenance of Strawberry.
