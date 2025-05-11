@@ -548,9 +548,28 @@ jobs:
       - build-windows-mingw
       - build-windows-msvc
     steps:
-      - name: Get current date
-        id: date
-        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+
+      - name: Get Git commit info
+        id: git_info
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+            echo "tag_name=${SHORT_SHA}" >> $GITHUB_OUTPUT
+            echo "release_name=Push Build ${SHORT_SHA}" >> $GITHUB_OUTPUT
+            echo "release_body<<EOF" >> $GITHUB_OUTPUT
+            echo "${COMMIT_MESSAGE}" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else # schedule or other
+            CURRENT_DATE=$(date +'%Y-%m-%d')
+            echo "tag_name=${CURRENT_DATE}" >> $GITHUB_OUTPUT
+            echo "release_name=Daily Build ${CURRENT_DATE}" >> $GITHUB_OUTPUT
+            echo "release_body=Daily Build" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
 
       - name: Download mingw Debug Artifacts (x86)
         uses: actions/download-artifact@v4
@@ -605,9 +624,9 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.event_name == 'push' && github.sha_short || steps.date.outputs.date }}
-          name: ${{ github.event_name == 'push' && format('Push Build {0}', format('{0}', github.sha_short)) || format('Daily Build {0}', steps.date.outputs.date) }}
-          body: ${{ github.event_name == 'push' && github.event.head_commit.message || 'Daily Build' }}
+          tag: ${{ steps.git_info.outputs.tag_name }}
+          name: ${{ steps.git_info.outputs.release_name }}
+          body: ${{ steps.git_info.outputs.release_body }}
           draft: false
           prerelease: false
           artifacts: StrawberrySetup*.exe
