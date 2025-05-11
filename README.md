@@ -29,7 +29,7 @@ This repository provides the following types of Windows builds. Builds are autom
 ## Issues and Support
 
 *   For any bugs, issues, or feature requests related to **Strawberry's functionality**, please submit them on the official [Strawberry Issues page](https://github.com/strawberrymusicplayer/strawberry/issues). The developers at Strawberry may be able to assist with issues via GitHub.
-*   If you encounter issues specifically with the **build process, the installers, or the availability of builds provided by *this* repository**, please [open an issue here](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY/issues).
+*   If you encounter issues specifically with the **build process, the installers, or the availability of builds provided by *this* repository**, please [open an issue here](https://github.com/stm7128/strawberry-autobuild-windows/issues).
 
 This repository does not offer official support for Strawberry Music Player itself.
 
