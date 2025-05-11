@@ -602,14 +602,12 @@ jobs:
         with:
             name: strawberry-msvc-artifacts-arm64-debug
 
-      
-
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.date.outputs.date }}
-          name: "Daily Build ${{ steps.date.outputs.date }}"
-          body: "Daily Build"
+          tag: ${{ github.event_name == 'push' && github.sha_short || steps.date.outputs.date }}
+          name: ${{ github.event_name == 'push' && format('Push Build {0}', format('{0}', github.sha_short)) || format('Daily Build {0}', steps.date.outputs.date) }}
+          body: ${{ github.event_name == 'push' && github.event.head_commit.message || 'Daily Build' }}
           draft: false
           prerelease: false
           artifacts: StrawberrySetup*.exe
