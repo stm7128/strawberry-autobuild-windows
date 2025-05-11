@@ -330,7 +330,7 @@ jobs:
           fetch-depth: 1
           submodules: recursive
       
-      - name: Checkout
+      - name: patch repo Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
@@ -358,6 +358,7 @@ jobs:
         run: sed -i 's/\-lm$//g' ${{env.prefix_path_unix}}/lib/pkgconfig/*.pc
 
       - name: patch
+        shell: bash
         run: patch -p0 < diff/remsparkle.diff
 
       - name: Run CMake
