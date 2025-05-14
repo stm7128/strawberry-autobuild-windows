@@ -6,6 +6,7 @@ This repository provides unofficial **Windows builds** of [Strawberry Music Play
 
 Official builds for Windows are not currently available directly from the main project for all users. However, [instructions for building from source](https://github.com/strawberrymusicplayer/strawberry#wrench-compiling-from-source) can be found in the official repository.
 
+
 ## Available Builds
 
 This repository provides the following types of Windows builds. Builds are automatically generated daily (and on pushes to the `main` branch of this repository) from the latest code of the official Strawberry repository.
