@@ -1,7 +1,5 @@
-diff --git a/dist/windows/strawberry.nsi.in b/dist/windows/strawberry.nsi.in
-index 69d06ac..482786b 100644
---- a/dist/windows/strawberry.nsi.in
-+++ b/dist/windows/strawberry.nsi.in
+--- dist/windows/strawberry.nsi.in
++++ dist/windows/strawberry.nsi.in
 @@ -331,7 +331,6 @@ Section "Strawberry" Strawberry
    File "liborc-0.4-0.dll"
    File "libpng16-16.dll"
