@@ -1,6 +1,8 @@
---- dist/windows/strawberry.nsi.in
-+++ dist/windows/strawberry.nsi.in
-@@ -319,7 +319,6 @@
+diff --git a/dist/windows/strawberry.nsi.in b/dist/windows/strawberry.nsi.in
+index 69d06ac..482786b 100644
+--- a/dist/windows/strawberry.nsi.in
++++ b/dist/windows/strawberry.nsi.in
+@@ -331,7 +331,6 @@ Section "Strawberry" Strawberry
    File "liborc-0.4-0.dll"
    File "libpng16-16.dll"
    File "libpsl-5.dll"
@@ -8,7 +10,7 @@
    File "libsoup-3.0-0.dll"
    File "libspeex-1.dll"
    File "libsqlite3-0.dll"
-@@ -417,7 +416,6 @@
+@@ -429,7 +428,6 @@ Section "Strawberry" Strawberry
    File "opus.dll"
    File "orc-0.4-0.dll"
    File "psl-5.dll"
@@ -16,7 +18,7 @@
    File "soup-3.0-0.dll"
    File "sqlite3.dll"
    File "tag.dll"
-@@ -843,7 +841,6 @@
+@@ -873,7 +871,6 @@ Section "Uninstall"
    Delete "$INSTDIR\liborc-0.4-0.dll"
    Delete "$INSTDIR\libpng16-16.dll"
    Delete "$INSTDIR\libpsl-5.dll"
@@ -24,7 +26,7 @@
    Delete "$INSTDIR\libsoup-3.0-0.dll"
    Delete "$INSTDIR\libspeex-1.dll"
    Delete "$INSTDIR\libsqlite3-0.dll"
-@@ -941,7 +938,6 @@
+@@ -971,7 +968,6 @@ Section "Uninstall"
    Delete "$INSTDIR\opus.dll"
    Delete "$INSTDIR\orc-0.4-0.dll"
    Delete "$INSTDIR\psl-5.dll"
