@@ -19,10 +19,10 @@ This repository provides the following types of Windows builds. Builds are autom
 
 | Toolchain | Architecture | Build Type | Notes |
 | :--- | :--- | :--- | :--- |
-| **MSVC (Microsoft Visual C++)** | `x86_64` (64-bit) | Release, Debug | **Recommended for most users** |
+| **MSVC (Microsoft Visual C++)** | `x64` (64-bit) | Release, Debug | **Recommended for most users** |
 | | `x86` (32-bit) | Release, Debug | |
 | | ~~`arm64`~~ | ~~Release~~, ~~Debug~~ | **Discontinued due to being unstable and unverifiable.** |
-| **MinGW (MinGW-w64 GCC)** | `x86_64` (64-bit) | Release, Debug | Alternative build using GCC |
+| **MinGW (MinGW-w64 GCC)** | `x64` (64-bit) | Release, Debug | Alternative build using GCC |
 | | `x86` (32-bit) | Release, Debug | |
 
 - **Release:** Optimized builds for everyday use. Most users should choose this.
