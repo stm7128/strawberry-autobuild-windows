@@ -8,7 +8,7 @@
 
 This repository provides unofficial **Windows builds** of [Strawberry Music Player](https://github.com/strawberrymusicplayer/strawberry).
 
-**Downloads:** You can download the latest unofficial builds from the [**Releases page**](https://github.com/stm7128/strawberry-autobuild-windows/releases).
+**Downloads:** You can download the latest unofficial builds from the [**Releases page**](https://github.com/stm7128/strawberry-autobuild-windows/releases/latest).
 
 Official builds for Windows are not currently available directly from the main project for all users. However, [instructions for building from source](https://github.com/strawberrymusicplayer/strawberry#wrench-compiling-from-source) can be found in the official repository.
 
@@ -32,7 +32,7 @@ This repository provides the following types of Windows builds. Builds are autom
 
 ## Important Note
 
-*   **Updater Disabled:** The built-in updater in these unofficial builds is intentionally disabled. This is because this build is provided independently, and using the official updater mechanism could cause confusion or direct users of this unofficial build to the official Patreon page, which is intended for supporters of the official project. To update, please download the latest version from the [Releases page](https://github.com/stm7128/strawberry-autobuild-windows/releases) of this repository.
+*   **Updater Disabled:** The built-in updater in these unofficial builds is intentionally disabled. This is because this build is provided independently, and using the official updater mechanism could cause confusion or direct users of this unofficial build to the official Patreon page, which is intended for supporters of the official project. To update, please download the latest version from the [Releases page](https://github.com/stm7128/strawberry-autobuild-windows/releases/latest) of this repository.
 
 ## Issues and Support
 

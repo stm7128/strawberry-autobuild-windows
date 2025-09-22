@@ -8,7 +8,7 @@
 
 このリポジトリは、[Strawberry Music Player](https://github.com/strawberrymusicplayer/strawberry) の非公式 **Windows ビルド**を提供します。
 
-**ダウンロード:** 最新の非公式ビルドは [**Releases ページ**](https://github.com/stm7128/strawberry-autobuild-windows/releases) からダウンロードできます。
+**ダウンロード:** 最新の非公式ビルドは [**Releases ページ**](https://github.com/stm7128/strawberry-autobuild-windows/releases/latest) からダウンロードできます。
 
 現在、公式プロジェクトからはすべてのユーザー向けのWindowsビルドが直接提供されていません。ソースコードからビルドする手順については、[公式リポジトリの説明](https://github.com/strawberrymusicplayer/strawberry#wrench-compiling-from-source) をご覧ください。
 
@@ -29,7 +29,7 @@
 
 ## 重要な注意点
 
-*   **アップデーターの無効化:** この非公式ビルドに搭載されている自動更新機能は、意図的に無効化されています。これは、本ビルドが独立して提供されているものであり、公式の更新メカニズムを使用すると、ユーザーが混乱したり、公式プロジェクトの支援者を対象としたPatreonページへ誤って誘導されたりする可能性があるためです。更新する際は、このリポジトリの [Releases ページ](https://github.com/stm7128/strawberry-autobuild-windows/releases) から最新版をダウンロードしてください。
+*   **アップデーターの無効化:** この非公式ビルドに搭載されている自動更新機能は、意図的に無効化されています。これは、本ビルドが独立して提供されているものであり、公式の更新メカニズムを使用すると、ユーザーが混乱したり、公式プロジェクトの支援者を対象としたPatreonページへ誤って誘導されたりする可能性があるためです。更新する際は、このリポジトリの [Releases ページ](https://github.com/stm7128/strawberry-autobuild-windows/releases/latest) から最新版をダウンロードしてください。
 
 ## 問題とサポート
 
