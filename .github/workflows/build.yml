@@ -624,15 +624,15 @@ jobs:
         with:
             name: strawberry-msvc-artifacts-x86_64-release
 
-      - name: Download msvc Release Artifacts (arm64)
-        uses: actions/download-artifact@v4
-        with:
-            name: strawberry-msvc-artifacts-arm64-release
+      # - name: Download msvc Release Artifacts (arm64)
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #       name: strawberry-msvc-artifacts-arm64-release
 
-      - name: Download msvc Debug Artifacts (arm64)
-        uses: actions/download-artifact@v4
-        with:
-            name: strawberry-msvc-artifacts-arm64-debug
+      # - name: Download msvc Debug Artifacts (arm64)
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #       name: strawberry-msvc-artifacts-arm64-debug
 
       - name: Create Release
         uses: ncipollo/release-action@v1
