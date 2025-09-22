@@ -1,5 +1,9 @@
 # strawberry-autobuild-windows
 
+---
+
+[![Build](https://github.com/stm7128/strawberry-autobuild-windows/actions/workflows/build.yml/badge.svg)](https://github.com/stm7128/strawberry-autobuild-windows/actions/workflows/build.yml)
+
 **English** | [日本語](https://github.com/stm7128/strawberry-autobuild-windows/blob/main/README.jp.md)
 
 This repository provides unofficial **Windows builds** of [Strawberry Music Player](https://github.com/strawberrymusicplayer/strawberry).
@@ -17,14 +21,16 @@ This repository provides the following types of Windows builds. Builds are autom
 | :--- | :--- | :--- | :--- |
 | **MSVC (Microsoft Visual C++)** | `x86_64` (64-bit) | Release, Debug | **Recommended for most users** |
 | | `x86` (32-bit) | Release, Debug | |
-| | `arm64` | Release, Debug | For Windows on ARM devices |
+| | ~~`arm64`~~ | ~~Release~~, ~~Debug~~ | **Discontinued due to being unstable and unverifiable.** |
 | **MinGW (MinGW-w64 GCC)** | `x86_64` (64-bit) | Release, Debug | Alternative build using GCC |
 | | `x86` (32-bit) | Release, Debug | |
 
-*   **Release:** Optimized builds for everyday use. Most users should choose this.
-*   **Debug:** Larger builds intended for developers or for troubleshooting specific issues.
+- **Release:** Optimized builds for everyday use. Most users should choose this.
+- **Debug:** Larger builds intended for developers or for troubleshooting specific issues.
 
-## Important Notes
+
+
+## Important Note
 
 *   **Updater Disabled:** The built-in updater in these unofficial builds is intentionally disabled. This is because this build is provided independently, and using the official updater mechanism could cause confusion or direct users of this unofficial build to the official Patreon page, which is intended for supporters of the official project. To update, please download the latest version from the [Releases page](https://github.com/stm7128/strawberry-autobuild-windows/releases) of this repository.
 

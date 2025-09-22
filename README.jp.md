@@ -1,5 +1,9 @@
 # strawberry-autobuild-windows
 
+---
+
+[![Build](https://github.com/stm7128/strawberry-autobuild-windows/actions/workflows/build.yml/badge.svg)](https://github.com/stm7128/strawberry-autobuild-windows/actions/workflows/build.yml)
+
 [English](https://github.com/stm7128/strawberry-autobuild-windows/blob/main/README.md) | **日本語** 
 
 このリポジトリは、[Strawberry Music Player](https://github.com/strawberrymusicplayer/strawberry) の非公式 **Windows ビルド**を提供します。
@@ -16,12 +20,12 @@
 | :--- | :--- | :--- | :--- |
 | **MSVC (Microsoft Visual C++)** | `x86_64` (64-bit) | Release, Debug | **ほとんどのユーザーに推奨** |
 | | `x86` (32-bit) | Release, Debug | |
-| | `arm64` | Release, Debug | Windows on ARM デバイス用 |
+| | ~~`arm64`~~ | ~~Release~~, ~~Debug~~ | **このビルドは不安定かつ検証不可能なため廃止しました。** |
 | **MinGW (MinGW-w64 GCC)** | `x86_64` (64-bit) | Release, Debug | GCCを使用した代替ビルド |
 | | `x86` (32-bit) | Release, Debug | |
 
-*   **Release:** 日常的な使用のために最適化されたビルドです。ほとんどのユーザーはこちらを選択してください。
-*   **Debug:** ファイルサイズが大きい、開発者や特定の問題を調査するためのビルドです。
+- **Release:** 日常的な使用のために最適化されたビルドです。ほとんどのユーザーはこちらを選択してください。
+- **Debug:** ファイルサイズが大きい、開発者や特定の問題を調査するためのビルドです。
 
 ## 重要な注意点
 
