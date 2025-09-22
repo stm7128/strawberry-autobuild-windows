@@ -18,10 +18,10 @@
 
 | ツールチェイン | アーキテクチャ | ビルドタイプ | 備考 |
 | :--- | :--- | :--- | :--- |
-| **MSVC (Microsoft Visual C++)** | `x86_64` (64-bit) | Release, Debug | **ほとんどのユーザーに推奨** |
+| **MSVC (Microsoft Visual C++)** | `x64` (64-bit) | Release, Debug | **ほとんどのユーザーに推奨** |
 | | `x86` (32-bit) | Release, Debug | |
 | | ~~`arm64`~~ | ~~Release~~, ~~Debug~~ | **このビルドは不安定かつ検証不可能なため廃止しました。** |
-| **MinGW (MinGW-w64 GCC)** | `x86_64` (64-bit) | Release, Debug | GCCを使用した代替ビルド |
+| **MinGW (MinGW-w64 GCC)** | `x64` (64-bit) | Release, Debug | GCCを使用した代替ビルド |
 | | `x86` (32-bit) | Release, Debug | |
 
 - **Release:** 日常的な使用のために最適化されたビルドです。ほとんどのユーザーはこちらを選択してください。
