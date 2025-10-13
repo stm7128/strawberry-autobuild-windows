@@ -10,7 +10,7 @@ This repository provides unofficial **Windows builds** of [Strawberry Music Play
 
 **Downloads:** You can download the latest unofficial builds from the [**Releases page**](https://github.com/stm7128/strawberry-autobuild-windows/releases/latest).
 
-Official builds for Windows are not currently available directly from the main project for all users. However, [instructions for building from source](https://github.com/strawberrymusicplayer/strawberry#wrench-compiling-from-source) can be found in the official repository.
+Official builds for Windows are not currently available directly from the main project for all users. However, [instructions for building from source](https://github.com/strawberrymusicplayer/strawberry#wrench-build-from-source) can be found in the official repository.
 
 
 ## Available Builds

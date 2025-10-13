@@ -10,7 +10,7 @@
 
 **ダウンロード:** 最新の非公式ビルドは [**Releases ページ**](https://github.com/stm7128/strawberry-autobuild-windows/releases/latest) からダウンロードできます。
 
-現在、公式プロジェクトからはすべてのユーザー向けのWindowsビルドが直接提供されていません。ソースコードからビルドする手順については、[公式リポジトリの説明](https://github.com/strawberrymusicplayer/strawberry#wrench-compiling-from-source) をご覧ください。
+現在、公式プロジェクトからはすべてのユーザー向けのWindowsビルドが直接提供されていません。ソースコードからビルドする手順については、[公式リポジトリの説明](https://github.com/strawberrymusicplayer/strawberry#wrench-build-from-source) をご覧ください。
 
 ## 利用可能なビルド
 
