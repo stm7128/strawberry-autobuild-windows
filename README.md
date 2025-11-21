@@ -34,6 +34,12 @@ This repository provides the following types of Windows builds. Builds are autom
 
 *   **Updater Disabled:** The built-in updater in these unofficial builds is intentionally disabled. This is because this build is provided independently, and using the official updater mechanism could cause confusion or direct users of this unofficial build to the official Patreon page, which is intended for supporters of the official project. To update, please download the latest version from the [Releases page](https://github.com/stm7128/strawberry-autobuild-windows/releases/latest) of this repository.
 
+
+## Transparency
+
+Builds are automated via [GitHub Actions](https://github.com/stm7128/strawberry-autobuild-windows/actions).
+The auto-updater is disabled via CMake configuration, and the installer script (`.nsi`) is patched to match. No other source code changes are made.
+
 ## Issues and Support
 
 *   For any bugs, issues, or feature requests related to **Strawberry's functionality**, please submit them on the official [Strawberry Issues page](https://github.com/strawberrymusicplayer/strawberry/issues). The developers at Strawberry may be able to assist with issues via GitHub.

@@ -31,6 +31,11 @@
 
 *   **アップデーターの無効化:** この非公式ビルドに搭載されている自動更新機能は、意図的に無効化されています。これは、本ビルドが独立して提供されているものであり、公式の更新メカニズムを使用すると、ユーザーが混乱したり、公式プロジェクトの支援者を対象としたPatreonページへ誤って誘導されたりする可能性があるためです。更新する際は、このリポジトリの [Releases ページ](https://github.com/stm7128/strawberry-autobuild-windows/releases/latest) から最新版をダウンロードしてください。
 
+## 透明性
+
+ビルドは [GitHub Actions](https://github.com/stm7128/strawberry-autobuild-windows/actions) で自動生成されます。
+非公式ビルドでは不要な自動更新機能をCMakeで無効化し、ビルドを通すために .nsi ファイルのみ修正しています。ソースコード本体の改変はありません。
+
 ## 問題とサポート
 
 *   **Strawberryの機能**に関するバグ、問題、機能リクエストは、公式の [Strawberry Issues ページ](https://github.com/strawberrymusicplayer/strawberry/issues) に報告してください。Strawberryの開発者がGitHub経由で対応してくれる可能性があります。
