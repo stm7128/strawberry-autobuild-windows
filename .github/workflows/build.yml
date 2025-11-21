@@ -1,8 +1,10 @@
-name: Build
 on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/build.yml'
+      - 'remsparkle.diff'
   schedule:
     - cron: '0 0 * * *'
 
