@@ -217,15 +217,15 @@ jobs:
            arch: x86
            buildtype: release
 
-        #  - name: "arm64 debug"
-        #    runner: windows-11-arm
-        #    arch: arm64
-        #    buildtype: debug
+         - name: "arm64 debug"
+           runner: windows-11-arm
+           arch: arm64
+           buildtype: debug
 
-        #  - name: "arm64 release"
-        #    runner: windows-11-arm
-        #    arch: arm64
-        #    buildtype: release
+         - name: "arm64 release"
+           runner: windows-11-arm
+           arch: arm64
+           buildtype: release
 
     runs-on: ${{matrix.runner}}
 
