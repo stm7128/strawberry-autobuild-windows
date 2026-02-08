@@ -14,45 +14,45 @@
 
 ## 利用可能なビルド
 
-このリポジトリでは、以下の種類のWindowsビルドを提供しています。ビルドは、公式のStrawberryリポジトリの最新コードを元に、毎日（およびこのリポジトリの`main`ブランチへのプッシュ時）自動的に生成されます。
+ビルドは、公式のStrawberryリポジトリの最新コードを元に、毎日（およびこのリポジトリの`main`ブランチへのプッシュ時）自動的に生成されます。
 
 | ツールチェイン | アーキテクチャ | ビルドタイプ | 備考 |
 | :--- | :--- | :--- | :--- |
-| **MSVC (Microsoft Visual C++)** | `x64` (64-bit) | Release, Debug | **ほとんどのユーザーに推奨** |
-| | `x86` (32-bit) | Release, Debug | |
-| | ~~`arm64`~~ | ~~Release~~, ~~Debug~~ | **このビルドは不安定かつ検証不可能なため廃止しました。** |
-| **MinGW (MinGW-w64 GCC)** | `x64` (64-bit) | Release, Debug | GCCを使用した代替ビルド |
+| **MSVC (Microsoft Visual C++)** | `x64` (64-bit) | Release, Debug | ほとんどのWindowsユーザーに**推奨** |
+| | `x86` (32-bit) | Release, Debug | 32bit Windowsシステム用 |
+| | `arm64` | Release, Debug | **試験的提供**（未検証） |
+| **MinGW (MinGW-w64 GCC)** | `x64` (64-bit) | Release, Debug | GCCツールチェインを使用した代替ビルド |
 | | `x86` (32-bit) | Release, Debug | |
 
-- **Release:** 日常的な使用のために最適化されたビルドです。ほとんどのユーザーはこちらを選択してください。
-- **Debug:** ファイルサイズが大きい、開発者や特定の問題を調査するためのビルドです。
+- **Release:** パフォーマンスが最適化された、日常利用向けのビルドです。
+- **Debug:** トラブルシューティング用のシンボルが含まれています。ファイルサイズが大きく、開発者向けです。
 
 ## 重要な注意点
 
-*   **アップデーターの無効化:** この非公式ビルドに搭載されている自動更新機能は、意図的に無効化されています。これは、本ビルドが独立して提供されているものであり、公式の更新メカニズムを使用すると、ユーザーが混乱したり、公式プロジェクトの支援者を対象としたPatreonページへ誤って誘導されたりする可能性があるためです。更新する際は、このリポジトリの [Releases ページ](https://github.com/stm7128/strawberry-autobuild-windows/releases/latest) から最新版をダウンロードしてください。
+- **アップデーターの無効化:** このビルドでは自動更新機能が意図的に無効化されています。これは、本ビルドが公式とは異なるチャンネルで提供されていることによる混乱を防ぎ、また公式プロジェクトの支援メカニズムを損なわないようにするためです。更新する際は、このリポジトリから手動で最新版をダウンロードしてください。
+- **ARM64ビルドの試験的ステータス:** ARM64ビルドの提供を再開しましたが、これらは**試験的なもの**です。管理者はARM64 Windowsの実機（Snapdragon X Elite等）を所有していないため、**動作確認は一切行われていません**。ARM64デバイスをご利用の方で、動作の成否や不具合などの報告をいただける場合は、[GitHub Issues](https://github.com/stm7128/strawberry-autobuild-windows/issues) までフィードバックをいただけると助かります。
 
 ## 透明性
 
-ビルドは [GitHub Actions](https://github.com/stm7128/strawberry-autobuild-windows/actions) で自動生成されます。
-非公式ビルドでは不要な自動更新機能をCMakeで無効化し、ビルドを通すために .nsi ファイルのみ修正しています。ソースコード本体の改変はありません。
+セキュリティと信頼性を確保するため、すべてのビルドは [GitHub Actions](https://github.com/stm7128/strawberry-autobuild-windows/actions) で自動化されています。
+ビルドプロセスでは以下の変更を行っています：
+- CMakeの設定で自動更新機能を無効化しています (`-DENABLE_QTSPARKLE=OFF`)。
+- インストーラースクリプト (`.nsi`) に、上記設定に合わせるためのパッチを適用しています。
+- Strawberryのソースコード本体には、これら以外の改変は一切加えていません。
 
 ## 問題とサポート
 
-*   **Strawberryの機能**に関するバグ、問題、機能リクエストは、公式の [Strawberry Issues ページ](https://github.com/strawberrymusicplayer/strawberry/issues) に報告してください。Strawberryの開発者がGitHub経由で対応してくれる可能性があります。
-    *   *（例：音楽の再生が途切れる、特定のファイル形式が再生できない、新しいオーディオ出力に関する機能リクエストなど）*
-
-*   **このリポジトリが提供するビルドプロセス、インストーラー、またはビルドの可用性**に特化した問題が発生した場合は、[こちらのIssues](https://github.com/stm7128/strawberry-autobuild-windows/issues) に報告してください。
-    *   *（例：インストーラーが実行できない、ダウンロードしたファイルが破損している、定期ビルドが失敗しているなど）*
-
-このリポジトリは、Strawberry Music Player自体の公式サポートを提供するものではありません。
+- **Strawberry 本体のバグ報告:** （例：再生の不具合、UIのバグ、機能リクエストなど）は、公式の [Strawberry Issues ページ](https://github.com/strawberrymusicplayer/strawberry/issues) に報告してください。
+  - *注：公式に報告する際は、混乱を避けるため「**非公式ビルドを使用していること**」を明記してください。*
+- **ビルドやインストーラーに関する問題:** （例：インストーラーが起動しない、DLLが足りない、リンク切れなど）は、[このリポジトリのIssues](https://github.com/stm7128/strawberry-autobuild-windows/issues) に報告してください。
 
 ## ライセンス
 
-`Strawberry Music Player`はGPLv3ライセンスで提供されています。これらの非公式ビルドも、GPLv3の条項に基づいて提供されます。
+Strawberry Music PlayerはGPLv3ライセンスで提供されています。これらの非公式ビルドおよび本リポジトリのビルドスクリプトも、GPLv3の条項に基づいて提供されます。
 
 ## 公式開発のサポート
 
-この度は、Strawberry Music Playerの非公式ビルドをご利用いただきありがとうございます。もしこのソフトウェアを気に入っていただけましたら、以下の方法で公式開発のサポートをご検討ください。**公式開発者を直接支援する**ことは、Strawberryの継続的な開発とメンテナンスに繋がります。
+Strawberry Music Playerを気に入っていただけましたら、公式開発者である **Jonas Kvinge** 氏への支援をぜひご検討ください。公式開発者を直接支援することは、プロジェクトの継続と将来的な発展に繋がります。
 
 - [Patreon](https://www.patreon.com/jonaskvinge) - 支援者は公式ビルドを入手できる場合があります。現在の特典やプランについては、各ページをご確認ください。
 - [GitHub Sponsors](https://github.com/sponsors/jonaski)
