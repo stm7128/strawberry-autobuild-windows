@@ -270,7 +270,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: downloads
-          key: deps-${{ matrix.arch }}-${{ matrix.buildtype }}-${{ hashFiles('.github/workflows/build.yml') }}
+          key: deps-${{ matrix.arch }}-${{ matrix.buildtype }}-${{ github.sha }}
 
       - name: Create downloads directory
         if: steps.cache-deps.outputs.cache-hit != 'true'
