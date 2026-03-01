@@ -1,6 +1,5 @@
 # strawberry-autobuild-windows
 
----
 
 [![Build](https://github.com/stm7128/strawberry-autobuild-windows/actions/workflows/build.yml/badge.svg)](https://github.com/stm7128/strawberry-autobuild-windows/actions/workflows/build.yml)
 
