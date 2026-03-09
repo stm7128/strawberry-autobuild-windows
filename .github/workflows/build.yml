@@ -20,9 +20,7 @@ jobs:
     container:
       image: jonaski/strawberry-mxe-${{matrix.arch}}-${{matrix.buildtype}}
     steps:
-      
-      - name: Force failure
-        run: exit 1
+
 
       - name: Set cmake buildtype
         shell: bash
@@ -233,11 +231,6 @@ jobs:
     runs-on: ${{matrix.runner}}
 
     steps:
-
-      
-      - name: Force failure
-        run: exit 1
-
       - name: Set prefix path
         shell: bash
         run: |
