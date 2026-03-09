@@ -565,9 +565,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Force failure
-        run: exit 1
 
       - name: Get Git commit info
         id: git_info
