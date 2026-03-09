@@ -637,18 +637,31 @@ jobs:
 
       - name: Send Discord notification
         run: |
-          curl -H "Content-Type: application/json" \
-          -d "{
-            \"embeds\": [{
-              \"title\": \"Build Failed\",
-              \"color\": 16711680,
-              \"fields\": [
-                {\"name\": \"Repository\", \"value\": \"${{ github.repository }}\", \"inline\": true},
-                {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true},
-                {\"name\": \"Event\", \"value\": \"${{ github.event_name }}\", \"inline\": true},
-                {\"name\": \"Failed Jobs\", \"value\": \"${{ steps.failed.outputs.failed_jobs }}\"}
-              ],
-              \"url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-            }]
-          }" \
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+          # 失敗したジョブのリストを変数に格納
+          FAILED_JOBS_LIST='${{ steps.failed.outputs.failed_jobs }}'
+
+          # jq を使って安全にJSONを組み立てる
+          PAYLOAD=$(jq -n \
+            --arg repo "${{ github.repository }}" \
+            --arg branch "${{ github.ref_name }}" \
+            --arg event "${{ github.event_name }}" \
+            --arg jobs "$FAILED_JOBS_LIST" \
+            --arg url "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            '{
+              embeds: [{
+                title: "Build Failed",
+                color: 16711680,
+                fields: [
+                  {name: "Repository", value: $repo, inline: true},
+                  {name: "Branch", value: $branch, inline: true},
+                  {name: "Event", value: $event, inline: true},
+                  {name: "Failed Jobs", value: $jobs}
+                ],
+                url: $url
+              }]
+            }')
+
+          # 生成されたJSONを送信
+          curl -X POST -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
