@@ -606,3 +606,43 @@ jobs:
           makeLatest: true
           allowUpdates: true
           artifacts: "all-artifacts/StrawberrySetup*.exe"
+
+  notify-discord:
+    name: Notify Discord on Failure
+    runs-on: ubuntu-latest
+    needs:
+      - build-windows-mingw
+      - build-windows-msvc
+      - upload
+    if: failure()
+
+    steps:
+      - name: Get failed jobs
+        id: failed
+        run: |
+          FAILED=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs \
+            | jq -r '.jobs[] | select(.conclusion=="failure") | .name')
+
+          echo "failed_jobs<<EOF" >> $GITHUB_OUTPUT
+          echo "$FAILED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send Discord notification
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{
+            \"embeds\": [{
+              \"title\": \"Build Failed\",
+              \"color\": 16711680,
+              \"fields\": [
+                {\"name\": \"Repository\", \"value\": \"${{ github.repository }}\", \"inline\": true},
+                {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true},
+                {\"name\": \"Event\", \"value\": \"${{ github.event_name }}\", \"inline\": true},
+                {\"name\": \"Failed Jobs\", \"value\": \"${{ steps.failed.outputs.failed_jobs }}\"}
+              ],
+              \"url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+            }]
+          }" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
