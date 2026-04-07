@@ -28,10 +28,16 @@ Builds are automatically generated daily (and on pushes to the `main` branch) fr
 
 ## Important Notes
 
+
+- **Updater Intentionally Disabled:**
+  The built-in auto-updater (Sparkle/QtSparkle) is **disabled** in these builds. This is a deliberate choice for the following reasons:
+  1. **UX Consistency:** Since these are unofficial automated builds, the official update channel would repeatedly notify users to "update" to the official release (often pointing to Patreon), which creates a confusing and repetitive loop for users who have chosen to use this specific CI version.
+  2. **Technical Compatibility:** These builds are not signed with the official project's certificate, meaning the official auto-updater would fail or point to incompatible binaries.
+  3. **Reducing Support Burden:** Disabling the updater prevents users from accidentally "updating" to an official version they may not have access to, and prevents the official developer from receiving irrelevant update-related queries from unofficial build users.
+  - *To update, please manually download the latest release from this repository.*
 - **x86 (32-bit) Support Status:**
   - **MSVC x86:** These builds are no longer provided. Support for 32-bit x86 architecture has been officially dropped by both the Qt framework and the Strawberry Music Player project.
   - **MinGW x86:** While these builds are currently still being generated, the x86 configuration has been removed from the upstream repository. As a result, **full functionality and stability are not guaranteed**. It is highly recommended to migrate to a 64-bit version of Windows if possible.
-- **Updater Disabled:** The built-in auto-updater is intentionally disabled. This is to avoid confusion with official release channels and to ensure that users of this unofficial build do not inadvertently bypass the official project's support mechanisms. To update, please download the latest version manually from this repository.
 - **ARM64 Experimental Status:** ARM64 builds are provided on an experimental basis. As the maintainer does not own a physical ARM64 Windows device (e.g., Snapdragon X Elite/Plus), **these builds are entirely untested**. If you are using an ARM64 device, we would greatly appreciate your feedback (success or failure) via [GitHub Issues](https://github.com/stm7128/strawberry-autobuild-windows/issues).
 
 ## Transparency
