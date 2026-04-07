@@ -18,16 +18,19 @@ Builds are automatically generated daily (and on pushes to the `main` branch) fr
 | Toolchain | Architecture | Build Type | Notes |
 | :--- | :--- | :--- | :--- |
 | **MSVC (Microsoft Visual C++)** | `x64` (64-bit) | Release, Debug | **Recommended** for most Windows users. |
-| | `x86` (32-bit) | Release, Debug | For older 32-bit Windows systems. |
+| | ~~`x86` (32-bit)~~ | - | **Discontinued.** No longer supported by Qt/Strawberry. |
 | | `arm64` | Release, Debug | **Experimental** (Untested). |
 | **MinGW (MinGW-w64 GCC)** | `x64` (64-bit) | Release, Debug | Alternative build using the GCC toolchain. |
-| | `x86` (32-bit) | Release, Debug | |
+| | `x86` (32-bit) | Release, Debug | **Deprecated.** Removed upstream; functionality not guaranteed. |
 
 - **Release:** Optimized for performance and everyday use.
 - **Debug:** Includes symbols for troubleshooting. Larger file size, intended for developers.
 
 ## Important Notes
 
+- **x86 (32-bit) Support Status:**
+  - **MSVC x86:** These builds are no longer provided. Support for 32-bit x86 architecture has been officially dropped by both the Qt framework and the Strawberry Music Player project.
+  - **MinGW x86:** While these builds are currently still being generated, the x86 configuration has been removed from the upstream repository. As a result, **full functionality and stability are not guaranteed**. It is highly recommended to migrate to a 64-bit version of Windows if possible.
 - **Updater Disabled:** The built-in auto-updater is intentionally disabled. This is to avoid confusion with official release channels and to ensure that users of this unofficial build do not inadvertently bypass the official project's support mechanisms. To update, please download the latest version manually from this repository.
 - **ARM64 Experimental Status:** ARM64 builds are provided on an experimental basis. As the maintainer does not own a physical ARM64 Windows device (e.g., Snapdragon X Elite/Plus), **these builds are entirely untested**. If you are using an ARM64 device, we would greatly appreciate your feedback (success or failure) via [GitHub Issues](https://github.com/stm7128/strawberry-autobuild-windows/issues).
 
