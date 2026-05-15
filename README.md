@@ -32,8 +32,7 @@ Builds are automatically generated daily (and on pushes to the `main` branch) fr
 - **Updater Intentionally Disabled:**
   The built-in auto-updater (Sparkle/QtSparkle) is **disabled** in these builds. This is a deliberate choice for the following reasons:
   1. **UX Consistency:** Since these are unofficial automated builds, the official update channel would repeatedly notify users to "update" to the official release (often pointing to Patreon), which creates a confusing and repetitive loop for users who have chosen to use this specific CI version.
-  2. **Technical Compatibility:** These builds are not signed with the official project's certificate, meaning the official auto-updater would fail or point to incompatible binaries.
-  3. **Reducing Support Burden:** Disabling the updater prevents users from accidentally "updating" to an official version they may not have access to, and prevents the official developer from receiving irrelevant update-related queries from unofficial build users.
+  2. **Reducing Support Burden:** Disabling the updater prevents users from accidentally "updating" to an official version they may not have access to, and prevents the official developer from receiving irrelevant update-related queries from unofficial build users.
   - *To update, please manually download the latest release from this repository.*
 - **x86 (32-bit) Support Status:**
   - **MSVC x86:** These builds are no longer provided. Support for 32-bit x86 architecture has been officially dropped by both the Qt framework and the Strawberry Music Player project.
