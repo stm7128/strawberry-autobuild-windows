@@ -152,6 +152,14 @@ jobs:
         working-directory: build
         run: ls
 
+      - name: Fix OpenSSL entries for MinGW 32-bit
+        if: matrix.arch == 'i686'
+        shell: bash
+        working-directory: build
+        run: |
+          sed -i 's/libcrypto-4\.dll/libcrypto-3.dll/g' strawberry.nsi
+          sed -i 's/libssl-4\.dll/libssl-3.dll/g' strawberry.nsi
+
       - name: Check that all files are included in nsi
         shell: bash
         working-directory: build
