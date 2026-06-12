@@ -260,12 +260,19 @@ jobs:
         with:
           dirs: ${{env.prefix_path_backslash}}\bin;C:\Windows;C:\Windows\system32;C:\Program Files\Git\bin;C:\Program Files\CMake\bin;C:\Program Files\GitHub CLI;C:\ProgramData\Chocolatey\bin;C:\Program Files (x86)\NSIS
 
+      - name: Get latest dependencies tag
+        id: get-deps-tag
+        shell: bash
+        run: |
+          LATEST_TAG=$(curl -s https://api.github.com/repos/strawberrymusicplayer/strawberry-msvc-dependencies/releases/latest | jq -r '.tag_name')
+          echo "tag=${LATEST_TAG}" >> $GITHUB_OUTPUT
+
       - name: Cache dependencies
         id: cache-deps
         uses: actions/cache@v4
         with:
           path: downloads
-          key: deps-${{ matrix.arch }}-${{ matrix.buildtype }}-${{ github.sha }}
+          key: deps-${{ matrix.arch }}-${{ matrix.buildtype }}-${{ steps.get-deps-tag.outputs.tag }}
 
       - name: Create downloads directory
         if: steps.cache-deps.outputs.cache-hit != 'true'
@@ -301,31 +308,37 @@ jobs:
         run: find "/c/program files (x86)/windows kits/" -type f \( -iname 'icu*.lib' -o -iname 'icu*.h' \) -print -delete
 
       - name: Download NSIS LockedList plugin
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
         run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip
 
       - name: Extract NSIS LockedList plugin
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
         run: 7z x LockedList.zip
 
       - name: Download NSIS Registry plugin
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
         run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip
 
       - name: Extract NSIS Registry plugin
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
         run: 7z x Registry.zip
 
       - name: Download NSIS Inetc plugin
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
         run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip
 
       - name: Extract NSIS Inetc plugin
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
         run: 7z x Inetc.zip
