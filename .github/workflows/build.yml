@@ -166,7 +166,7 @@ jobs:
         run: |
           files_missing=
           for i in $(ls -1 *.dll *.exe); do
-            nsi_file_entry=$(grep -i "^\s\+File\s\+\"$i\"$" strawberry.nsi || true)
+            nsi_file_entry=$(grep -i "^\s\+File\s\+\(/nonfatal\s\+\)\?\"$i\"$" strawberry.nsi || true)
             if [ "${nsi_file_entry}" = "" ]; then
               echo "File ${i} is missing File entry."
             fi
@@ -529,7 +529,7 @@ jobs:
         run: |
           files_missing=
           for i in $(ls -1 *.dll *.exe); do
-            nsi_file_entry=$(grep -i "^\s\+File\s\+\"$i\"$" strawberry.nsi || true)
+            nsi_file_entry=$(grep -i "^\s\+File\s\+\(/nonfatal\s\+\)\?\"$i\"$" strawberry.nsi || true)
             if [ "${nsi_file_entry}" = "" ]; then
               echo "File ${i} is missing File entry."
             fi
