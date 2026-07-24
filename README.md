@@ -36,7 +36,7 @@ Builds are automatically generated daily (and on pushes to the `main` branch) fr
   - *To update, please manually download the latest release from this repository.*
 - **x86 (32-bit) Support Status:**
   - **MSVC x86:** These builds are no longer provided. Support for 32-bit x86 architecture has been officially dropped by both the Qt framework and the Strawberry Music Player project.
-  - **MinGW x86:** While these builds are currently still being generated, the x86 configuration has been removed from the upstream repository. As a result, **full functionality and stability are not guaranteed**. It is highly recommended to migrate to a 64-bit version of Windows if possible.
+  - **MinGW x86:** While these builds are currently still being generated, the x86 configuration has been removed from the upstream repository. As a result, these builds use a custom forked MXE environment instead of the upstream one, and **full functionality and stability are not guaranteed**. It is highly recommended to migrate to a 64-bit version of Windows if possible.
 - **ARM64 Experimental Status:** ARM64 builds are provided on an experimental basis. As the maintainer does not own a physical ARM64 Windows device (e.g., Snapdragon X Elite/Plus), **these builds are entirely untested**. If you are using an ARM64 device, we would greatly appreciate your feedback (success or failure) via [GitHub Issues](https://github.com/stm7128/strawberry-autobuild-windows/issues).
 
 ## Transparency
@@ -45,6 +45,7 @@ To ensure security and reliability, all builds are automated via [GitHub Actions
 The following modifications are made during the build process:
 - The auto-updater is disabled via CMake configuration (`-DENABLE_QTSPARKLE=OFF`).
 - The NSIS installer script (`.nsi`) is patched to match this configuration.
+- For the 32-bit (i686) MinGW build, since upstream support has ended, it uses a custom forked MXE environment ([stm7128/strawberry-mxe](https://github.com/stm7128/strawberry-mxe)) and its publicly hosted container image. The source code and Dockerfiles for this MXE build environment are fully open and completely verifiable.
 - No other modifications are made to the original Strawberry source code.
 
 ## Issues and Support
