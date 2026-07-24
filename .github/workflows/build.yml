@@ -18,7 +18,7 @@ jobs:
         arch: [ 'i686', 'x86_64' ]
         buildtype: [ 'debug', 'release' ]
     container:
-      image: jonaski/strawberry-mxe-${{matrix.arch}}-${{matrix.buildtype}}
+      image: ${{ matrix.arch == 'i686' && 'ghcr.io/stm7128' || 'jonaski' }}/strawberry-mxe-${{matrix.arch}}-${{matrix.buildtype}}
     steps:
 
 
