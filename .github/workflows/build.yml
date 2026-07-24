@@ -264,7 +264,7 @@ jobs:
         id: get-deps-tag
         shell: bash
         run: |
-          LATEST_TAG=$(curl -s https://api.github.com/repos/strawberrymusicplayer/strawberry-msvc-dependencies/releases/latest | jq -r '.tag_name')
+          LATEST_TAG=$(curl --ssl-no-revoke -s https://api.github.com/repos/strawberrymusicplayer/strawberry-msvc-dependencies/releases/latest | jq -r '.tag_name')
           echo "tag=${LATEST_TAG}" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
@@ -283,7 +283,7 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
-        run: curl -f -O -L https://github.com/strawberrymusicplayer/strawberry-msvc-dependencies/releases/latest/download/strawberry-msvc-${{matrix.arch}}-${{matrix.buildtype}}.tar.xz
+        run: curl --ssl-no-revoke -f -O -L https://github.com/strawberrymusicplayer/strawberry-msvc-dependencies/releases/latest/download/strawberry-msvc-${{matrix.arch}}-${{matrix.buildtype}}.tar.xz
 
       - name: Extract Windows MSVC dependencies
         shell: bash
@@ -311,7 +311,7 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
-        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip
+        run: curl --ssl-no-revoke -f -O -L https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip
 
       - name: Extract NSIS LockedList plugin
         if: steps.cache-deps.outputs.cache-hit != 'true'
@@ -323,7 +323,7 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
-        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip
+        run: curl --ssl-no-revoke -f -O -L https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip
 
       - name: Extract NSIS Registry plugin
         if: steps.cache-deps.outputs.cache-hit != 'true'
@@ -335,7 +335,7 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
-        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip
+        run: curl --ssl-no-revoke -f -O -L https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip
 
       - name: Extract NSIS Inetc plugin
         if: steps.cache-deps.outputs.cache-hit != 'true'
@@ -487,7 +487,7 @@ jobs:
       - name: Download copydlldeps.sh
         shell: bash
         working-directory: build
-        run: curl -f -O -L https://raw.githubusercontent.com/strawberrymusicplayer/strawberry-mxe/master/tools/copydlldeps.sh
+        run: curl --ssl-no-revoke -f -O -L https://raw.githubusercontent.com/strawberrymusicplayer/strawberry-mxe/master/tools/copydlldeps.sh
 
       - name: Copy dependencies
         shell: bash
@@ -553,7 +553,7 @@ jobs:
       - name: Download MSVC runtime
         shell: bash
         working-directory: build
-        run: curl -f -O -L https://aka.ms/vs/17/release/vc_redist.$(test "${{matrix.arch}}" = "x86_64" && echo "x64" || echo "${{matrix.arch}}").exe
+        run: curl --ssl-no-revoke -f -O -L https://aka.ms/vs/17/release/vc_redist.$(test "${{matrix.arch}}" = "x86_64" && echo "x64" || echo "${{matrix.arch}}").exe
 
       - name: Create nsis installer
         shell: cmd
