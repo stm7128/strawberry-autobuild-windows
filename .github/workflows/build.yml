@@ -74,7 +74,7 @@ jobs:
           cmake
           -S .
           -B build
-          -DCMAKE_TOOLCHAIN_FILE="${{ matrix.arch == 'i686' && '${{ github.workspace }}/cmake_custom/Toolchain-i686-w64-mingw32-shared.cmake' || '../cmake/Toolchain-x86_64-w64-mingw32-shared.cmake' }}"
+          --DCMAKE_TOOLCHAIN_FILE="${{ matrix.arch == 'i686' && format('{0}/cmake_custom/Toolchain-i686-w64-mingw32-shared.cmake', github.workspace) || '../cmake/Toolchain-x86_64-w64-mingw32-shared.cmake' }}"
           -DCMAKE_BUILD_TYPE="${{env.cmake_buildtype}}"
           -DCMAKE_PREFIX_PATH="/strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6"
           -DBUILD_WERROR=ON
