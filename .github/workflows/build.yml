@@ -54,7 +54,7 @@ jobs:
       - name: Revert i686 Arch Patch
         if: matrix.arch == 'i686'
         run: |
-          patch -p1 < 0001-revert-x86.patch
+          patch -p1 < diff/0001-revert-x86.patch
   
       - name: Create Custom Toolchain for i686
         if: matrix.arch == 'i686'
@@ -79,7 +79,7 @@ jobs:
           cmake
           -S .
           -B build
-          -DCMAKE_TOOLCHAIN_FILE=$(test "${{matrix.arch}}" = "i686" && echo "../cmake_custom/Toolchain-i686-w64-mingw32-shared.cmake" || echo "../cmake/Toolchain-${{matrix.arch}}-w64-mingw32-shared.cmake")
+          -DCMAKE_TOOLCHAIN_FILE=$(test "${{matrix.arch}}" = "i686" && echo "${GITHUB_WORKSPACE}/cmake_custom/Toolchain-i686-w64-mingw32-shared.cmake" || echo "${GITHUB_WORKSPACE}/cmake/Toolchain-${{matrix.arch}}-w64-mingw32-shared.cmake")
           -DCMAKE_BUILD_TYPE="${{env.cmake_buildtype}}"
           -DCMAKE_PREFIX_PATH="/strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6"
           -DBUILD_WERROR=ON
