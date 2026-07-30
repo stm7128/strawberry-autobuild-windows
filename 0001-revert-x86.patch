@@ -1,0 +1,25 @@
+From 80f8a7cd7490cf772cf4586b988cf0118c9f8f5c Mon Sep 17 00:00:00 2001
+From: stm7128 <114091453+stm7128@users.noreply.github.com>
+Date: Thu, 30 Jul 2026 15:03:31 +0900
+Subject: [PATCH] add i686 target
+
+---
+ dist/windows/strawberry.nsi.in | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/dist/windows/strawberry.nsi.in b/dist/windows/strawberry.nsi.in
+index 08777a86b..ea3d87dd4 100644
+--- a/dist/windows/strawberry.nsi.in
++++ b/dist/windows/strawberry.nsi.in
+@@ -13,6 +13,8 @@
+   !define arch_x64
+ !else if "@TARGET_ARCH@" == "arm64"
+   !define arch_arm64
++!else if "@TARGET_ARCH@" == "i686"
++  !define arch_x86
+ !else if "@TARGET_ARCH@" == ""
+   !error "Missing TARGET_ARCH"
+ !else
+-- 
+2.55.0.windows.3
+

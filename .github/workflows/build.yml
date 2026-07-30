@@ -48,8 +48,13 @@ jobs:
       - name: Link MXE directory
         run: ln -s /strawberry-mxe ~/mxe-shared
 
-      - name: patch
-        run: patch -p0 < diff/remsparkle.diff
+      - name: Sparkle Removing Patch
+        run: patch -p0 < diff/remsparkle.patch
+
+      - name: Revert i686 Arch Patch
+        if: matrix.arch == 'i686'
+        run: |
+          patch -p1 < 0001-revert-x86.patch
   
       - name: Create Custom Toolchain for i686
         if: matrix.arch == 'i686'
