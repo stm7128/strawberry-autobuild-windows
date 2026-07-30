@@ -57,17 +57,16 @@ jobs:
         run: |
           patch -p1 < diff/0001-a.patch
   
-      - name: Create Custom Toolchain for i686
-        if: matrix.arch == 'i686'
+      - name: Create Custom Toolchain
         run: |
           mkdir -p cmake_custom
-          cat << 'EOF' > cmake_custom/Toolchain-i686-w64-mingw32-shared.cmake
+          cat << 'EOF' > cmake_custom/Toolchain-${{matrix.arch}}-w64-mingw32-shared.cmake
           SET(CMAKE_SYSTEM_NAME Windows)
           SET(HOME "$ENV{HOME}")
-          SET(CMAKE_C_COMPILER "${HOME}/mxe-shared/usr/bin/i686-w64-mingw32.shared-gcc")
-          SET(CMAKE_CXX_COMPILER "${HOME}/mxe-shared/usr/bin/i686-w64-mingw32.shared-g++")
-          SET(CMAKE_RC_COMPILER "${HOME}/mxe-shared/usr/bin/i686-w64-mingw32.shared-windres")
-          SET(CMAKE_FIND_ROOT_PATH "${HOME}/mxe-shared/usr/i686-w64-mingw32.shared/")
+          SET(CMAKE_C_COMPILER "${HOME}/mxe-shared/usr/bin/${{matrix.arch}}-w64-mingw32.shared-gcc")
+          SET(CMAKE_CXX_COMPILER "${HOME}/mxe-shared/usr/bin/${{matrix.arch}}-w64-mingw32.shared-g++")
+          SET(CMAKE_RC_COMPILER "${HOME}/mxe-shared/usr/bin/${{matrix.arch}}-w64-mingw32.shared-windres")
+          SET(CMAKE_FIND_ROOT_PATH "${HOME}/mxe-shared/usr/${{matrix.arch}}-w64-mingw32.shared/")
           set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
           set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
           set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
@@ -80,7 +79,7 @@ jobs:
           cmake
           -S .
           -B build
-          -DCMAKE_TOOLCHAIN_FILE=$(test "${{matrix.arch}}" = "i686" && echo "${GITHUB_WORKSPACE}/cmake_custom/Toolchain-i686-w64-mingw32-shared.cmake" || echo "${GITHUB_WORKSPACE}/cmake/Toolchain-${{matrix.arch}}-w64-mingw32-shared.cmake")
+          -DCMAKE_TOOLCHAIN_FILE="${GITHUB_WORKSPACE}/cmake_custom/Toolchain-${{matrix.arch}}-w64-mingw32-shared.cmake"
           -DCMAKE_BUILD_TYPE="${{env.cmake_buildtype}}"
           -DCMAKE_PREFIX_PATH="/strawberry-mxe/usr/${{matrix.arch}}-w64-mingw32.shared/qt6"
           -DBUILD_WERROR=ON
