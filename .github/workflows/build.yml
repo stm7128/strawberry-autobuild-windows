@@ -4,7 +4,8 @@ on:
       - main
     paths:
       - '.github/workflows/build.yml'
-      - 'remsparkle.diff'
+      - 'remsparkle.patch'
+      - '0001-a.patch'
   schedule:
     - cron: '0 0 * * *'
 
@@ -54,7 +55,7 @@ jobs:
       - name: Revert i686 Arch Patch
         if: matrix.arch == 'i686'
         run: |
-          patch -p1 < diff/0001-revert-x86.patch
+          patch -p1 < diff/0001-a.patch
   
       - name: Create Custom Toolchain for i686
         if: matrix.arch == 'i686'
@@ -411,7 +412,7 @@ jobs:
 
       - name: patch
         shell: bash
-        run: patch -p0 < diff/remsparkle.diff
+        run: patch -p0 < diff/remsparkle.patch
 
       - name: Run CMake
         shell: cmd
