@@ -49,6 +49,30 @@ jobs:
       - name: Link MXE directory
         run: ln -s /strawberry-mxe ~/mxe-shared
 
+      - name: Restore ccache
+        if: github.event_name != 'release'
+        uses: actions/cache@v6
+        with:
+          path: ~/.ccache
+          key: ccache-${{github.job}}-${{matrix.arch}}-${{matrix.buildtype}}-${{github.run_id}}
+          restore-keys: ccache-${{github.job}}-${{matrix.arch}}-${{matrix.buildtype}}-
+
+      - name: Enable ccache
+        if: github.event_name != 'release'
+        run: |
+          ccache=/strawberry-mxe/.ccache/bin/ccache
+          if [ ! -x "${ccache}" ]; then
+            echo "::warning::${ccache} not found, building without ccache."
+            exit 0
+          fi
+          echo "CCACHE_DIR=${HOME}/.ccache" >> "${GITHUB_ENV}"
+          echo "CCACHE_BASEDIR=${GITHUB_WORKSPACE}" >> "${GITHUB_ENV}"
+          echo "CCACHE_NOHASHDIR=true" >> "${GITHUB_ENV}"
+          echo "CCACHE_MAXSIZE=750M" >> "${GITHUB_ENV}"
+          echo "CMAKE_C_COMPILER_LAUNCHER=${ccache}" >> "${GITHUB_ENV}"
+          echo "CMAKE_CXX_COMPILER_LAUNCHER=${ccache}" >> "${GITHUB_ENV}"
+          CCACHE_DIR="${HOME}/.ccache" "${ccache}" --zero-stats
+
       - name: Sparkle Removing Patch
         run: patch -p0 < diff/remsparkle.patch
 
@@ -97,6 +121,10 @@ jobs:
 
       - name: Run Make
         run: cmake --build build --config "${{env.cmake_buildtype}}" --parallel $(nproc)
+
+      - name: Show ccache statistics
+        if: github.event_name != 'release' && env.CMAKE_CXX_COMPILER_LAUNCHER != ''
+        run: ${CMAKE_CXX_COMPILER_LAUNCHER} --show-stats
 
       - name: Create directories
         working-directory: build
@@ -319,47 +347,21 @@ jobs:
 
       - name: Delete conflicting files
         shell: bash
-        run: rm -rf /c/{msys64,mingw32,mingw64} /c/strawberry/c "/c/program files/OpenSSL"
+        run: rm -rf /c/{msys64,mingw32,mingw64,clangarm64} /c/strawberry/c "/c/program files/OpenSSL"
 
       - name: Delete conflicting icu
         shell: bash
         run: find "/c/program files (x86)/windows kits/" -type f \( -iname 'icu*.lib' -o -iname 'icu*.h' \) -print -delete
 
       - name: Download NSIS LockedList plugin
-        if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
-        run: curl --ssl-no-revoke -f -O -L https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip
+        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip
 
       - name: Extract NSIS LockedList plugin
-        if: steps.cache-deps.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: downloads
         run: 7z x LockedList.zip
-
-      - name: Download NSIS Registry plugin
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        shell: cmd
-        working-directory: downloads
-        run: curl --ssl-no-revoke -f -O -L https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip
-
-      - name: Extract NSIS Registry plugin
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        shell: cmd
-        working-directory: downloads
-        run: 7z x Registry.zip
-
-      - name: Download NSIS Inetc plugin
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        shell: cmd
-        working-directory: downloads
-        run: curl --ssl-no-revoke -f -O -L https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip
-
-      - name: Extract NSIS Inetc plugin
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        shell: cmd
-        working-directory: downloads
-        run: 7z x Inetc.zip
 
       - name: Install NSIS plugins
         shell: cmd
@@ -367,16 +369,30 @@ jobs:
         run: |
           copy "Plugins\LockedList64.dll" "C:\Program Files (x86)\NSIS\Plugins\"
           copy "Plugins\x86-unicode\LockedList.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
-          copy "Desktop\Plugin\registry.dll" "C:\Program Files (x86)\NSIS\Plugins\"
-          copy "Desktop\Plugin\registry.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
-          copy "Plugins\x86-unicode\INetC.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
 
       - name: Setup MSVC Environment
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{matrix.arch}}
-          sdk: ${{env.sdk_version}}
-          vsversion: 2022
+        shell: pwsh
+        run: |
+          $vcvars_arch = if ("${{matrix.arch}}" -eq "arm64") { "arm64" } else { "x64" }
+          $vc_tools_component = if ("${{matrix.arch}}" -eq "arm64") { "Microsoft.VisualStudio.Component.VC.Tools.ARM64" } else { "Microsoft.VisualStudio.Component.VC.Tools.x86.x64" }
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+          $vs_path = & $vswhere -latest -products * -requires $vc_tools_component -property installationPath
+          if (-not $vs_path) { throw "Visual Studio with $vc_tools_component not found" }
+          Write-Host "Using Visual Studio in $vs_path"
+          # Run vcvarsall.bat from a batch file to avoid cmd.exe quoting issues, and print the resulting environment.
+          $vcvars_script = Join-Path $env:RUNNER_TEMP "vcvars.bat"
+          Set-Content -Path $vcvars_script -Encoding ascii -Value "@call `"$vs_path\VC\Auxiliary\Build\vcvarsall.bat`" $vcvars_arch ${{env.sdk_version}} || exit /b 1`r`n@set"
+          $vcvars_output = & cmd.exe /c $vcvars_script
+          if ($LASTEXITCODE -ne 0 -or ($vcvars_output -match '^\[ERROR:')) {
+            $vcvars_output | Write-Host
+            throw "vcvarsall.bat failed"
+          }
+          # Export the variables vcvarsall.bat added or changed to the following steps.
+          foreach ($line in $vcvars_output) {
+            if ($line -match '^([^=]+)=(.*)$' -and [Environment]::GetEnvironmentVariable($matches[1]) -ne $matches[2]) {
+              "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            }
+          }
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -571,7 +587,7 @@ jobs:
       - name: Download MSVC runtime
         shell: bash
         working-directory: build
-        run: curl --ssl-no-revoke -f -O -L https://aka.ms/vs/17/release/vc_redist.$(test "${{matrix.arch}}" = "x86_64" && echo "x64" || echo "${{matrix.arch}}").exe
+        run: curl -f -O -L https://aka.ms/vc14/vc_redist.$(test "${{matrix.arch}}" = "x86_64" && echo "x64" || echo "${{matrix.arch}}").exe
 
       - name: Create nsis installer
         shell: cmd
