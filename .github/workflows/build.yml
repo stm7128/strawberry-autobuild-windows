@@ -28,14 +28,14 @@ jobs:
         run: echo "cmake_buildtype=$(echo ${{matrix.buildtype}} | sed 's/.*/\u&/')" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: strawberrymusicplayer/strawberry
           fetch-depth: 1
           submodules: recursive
 
       - name: patch repo Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
           path: ./diff
@@ -302,7 +302,7 @@ jobs:
 
         
       - name: Cleanup PATH
-        uses: egor-tensin/cleanup-path@v4
+        uses: egor-tensin/cleanup-path@v5
         with:
           dirs: ${{env.prefix_path_backslash}}\bin;C:\Windows;C:\Windows\system32;C:\Program Files\Git\bin;C:\Program Files\CMake\bin;C:\Program Files\GitHub CLI;C:\ProgramData\Chocolatey\bin;C:\Program Files (x86)\NSIS
 
